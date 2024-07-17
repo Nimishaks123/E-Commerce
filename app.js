@@ -3,6 +3,7 @@ const session =require('express-session')
 const path=require('path')
 const bodyparser=require('body-parser')
 const app= express()
+const Razorpay = require('razorpay');
 require('dotenv').config();
 
 //mongoose

@@ -18,10 +18,7 @@ const categorySchema = new mongoose.Schema({
     action:{
         type:String}
 
-        
-
-    
-})
+    })
 
 
 module.exports = mongoose.model('category',categorySchema)

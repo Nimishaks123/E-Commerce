@@ -10,209 +10,156 @@ const loadProduct=async(req,res)=>{
         console.log('error from loadproduct ',error)
         
     }
-}
+};
 
-
-
-const addProduct=async(req,res)=>{
-
+const addProduct = async (req, res) => {
     try {
-       
-        //const category=await Category.findById(req.body.category)
-        const{name,description,price,countInStock,category}=req.body
-        let image;
-        if(req.files)
-            {
-                 image=req.files.map(image=>image.filename)
-                console.log("filesss",req.files);
-            }
-            else
-            {
-                console.log("no filesss");
-            }
-        // if(!category)
-        //     {
-        //         return res.status(400).send('Invalid category')
-        //     }
-        //  const product=new Product({
-        //     name:req.body.name,
-        //     description:req.body.description,
-            //richDescription:req.body.description,
-            //image:req.body.image,
-            //brand:req.body.brand,
-            // price:req.body.price,
-            // category:req.body.category,
-            // countInStock:req.body.countInStock,
-            //rating:req.body.rating,
-            //numReviews:req.body.numReviews, 
-           // isFeatured:req.body.isFeatured
-        //  })
-    // const  product=await Product.save()
-    //     if(product)
-    //     res.render('product',{message:'success'})
-    ///
-    //const category=await Category.find({})
-    const product=await Product.find({})
-        const existName=await Product.findOne({name:name})
-        if(existName)
-            {
-               res.render('product',{message:'product already exists' }) 
-            }
-            else
-            {
+        const { name, description, price, promo_Price, countInStock, category } = req.body;
+        const sizes = req.body.sizes ? JSON.parse(req.body.sizes) : []; // Parse sizes only if it exists in the request body
+        let images = [];
 
-                const productData= await Product.create({
-                    name:name,
-                    description:description,
-                    price:price,
-                    image:image,
-                    countInStock:countInStock,
-                    category:category
-                })
-               const saved= await productData.save()
-               if(saved)
-                {
-                const product=await Product.find({})
-                const category=await Category.find({})
-                    
-                res.render('product',{categories:category,message:'product added'});
-                console.log("product : ",productData);
+        if (req.files && req.files.length > 0) {
+            const allowedExtensions = /(\.jpg|\.jpeg|\.png|\.gif)$/i;
 
+            req.files.forEach(file => {
+                if (!allowedExtensions.exec(file.filename)) {
+                    return res.render('product', { failuremessage: 'Invalid file type. Only .jpg, .jpeg, .png, and .gif are allowed.' });
+                }
+                images.push(file.filename);
+            });
 
-            }
+            console.log("Files: ", req.files);
+        } else {
+            console.log("No files uploaded.");
         }
 
-        
-    } catch (error) {
-        
-        console.log('error from productcontroller category',error)
-    }
+        const existName = await Product.findOne({ name });
+        if (existName) {
+             res.render('product', {failuremessage: 'Product already exists' });
+        }
 
+        const productData = new Product({
+            name,
+            description,
+            price,
+            promo_Price,
+            images,
+            countInStock,
+            category,
+            sizes
+        });
+
+        const saved = await productData.save();
+        if (saved) {
+            const categories = await Category.find({});
+
+            res.render('product', { categories:categories, successmessage: 'Product added' });
+            console.log("Product: ", productData);
+        }
+    } catch (error) {
+        console.log('Error from productController addProduct:', error);
+    }
 };
 
 
-        ///
-    
-// const viewProduct=async(req,res)=>{
-//     try {
-//         const productList =await Product.find()
-//         res.render('productlist')
-//     } catch (error) {
-//         res.status(500).json({success:false})
-        
-//     }
-// }
-const loadProductlist=async(req,res)=>{
+const loadProductlist = async (req, res) => {
     try {
-        let page=parseInt(req.query.page)|| 1
-        let limit=2
-        let startIndex=(page-1)*limit
-        
-    let productlist=await Product.find().skip(startIndex).limit(limit)
-    let totalDocuments=await Product.countDocuments()
-    let totalPages=Math.ceil(totalDocuments/limit)
-    res.status(200).render('productlist',{products:productlist,page,totalPages})
+        let page = parseInt(req.query.page) || 1;
+        let limit = 4;
+        let startIndex = (page - 1) * limit;
+        let search = req.query.search || ''; // Get the search keyword from query parameters
 
-        //res.render('productlist',{products:productlist})
+        // Create a filter object for search
+        let filter = {};
+        if (search) {
+            filter = { name: { $regex: search, $options: 'i' } }; // Case-insensitive search by name
+        }
+
+        let productlist = await Product.find(filter).skip(startIndex).limit(limit);
+        let totalDocuments = await Product.countDocuments(filter);
+        let totalPages = Math.ceil(totalDocuments / limit);
+
+        res.status(200).render('productlist', { products: productlist, page, totalPages, search });
+
     } catch (error) {
-        console.log('error from loadproductlist ',error)
-        
+        console.log('error from loadProductlist ', error);
+        res.status(500).render('error', { message: 'Internal Server Error' });
     }
-}
-//
-const editProduct=async(req,res)=>{
+};
+
+const editProduct = async (req, res) => {
     try {
-        //id=req.query.id
-     //const productlist=await Product.find({_id:id})
-     const productlist=await Product.findById(req.query.id)
-     const category=await Category.find({})
+        const id = req.query.id;
+        const products = await Product.findById(id);
+        const categories = await Category.find({}); // Fetch categories
 
-        res.render('editProduct',{products:productlist,categories:category})
+        if (products) {
+            res.render('editProduct', { products, categories });
+        } else {
+            res.status(404).render('editProduct', { message: 'Product not found' });
+        }
     } catch (error) {
-        console.error("Error editing product:", error);
-             res.status(500).json({ error: "Error editing product" });
-        
+        console.log('Error from editProduct:', error);
+        res.status(500).render('error', { message: 'Internal Server Error' });
     }
-}
+};
 
-//
-// const editproduct = async (req, res, next) => {
-//     try {
-//       // console.log(req.body);
-//       const data = await Product.findById(req.query.id);
-  
-//       const category1 = await Category.find({});
-  
-//       if (category1 !== undefined) {
-//         res.render("editproduct2", {
-//           data: data,
-//           categories: category1,
-//           message: "",
-//         });
-//       } else {
-//         res.redirect("/products");
-//       }
-//     } catch (error) {
-//       console.error("Error adding product:", error);
-//       res.status(500).json({ error: "Error adding product" });
-//     }
-//   };
-  
-
-
-
-//
-
-const updateProduct=async(req,res)=>{
-
+const updateProduct = async (req, res) => {
     try {
-   
-        const id=req.query.id
-       const {name,description,price,countInStock}=req.body
+        const id = req.query.id;
+        const { name, description, price, promo_Price, countInStock, category } = req.body;
 
-
-       let image;
-
-       if(req.files)
-        {
-             image=req.files.map(image=>image.filename)
-            console.log("filesss",req.files);
+        // Validate id
+        if (!id) {
+            return res.render('editProduct', { failuremessage: 'Invalid product ID' });
         }
-        else
-        {
-            console.log("no filesss");
-        }
-        // editing 
-         const productEdit=await Product.findByIdAndUpdate(id,
-           { $set:{
-            name:name,
-            description:description,
-            price:price,
-            countInStock:countInStock,
-            image:image 
-        
-            
-            //action:action
-            
 
-    }},{new:true})
-        
-        
-        if(productEdit)
-        {
-            console.log("product edited ");
-            res.redirect('/admin/productlist')
-        }else
-        {
-            res.render('editProduct',{message:'error from editing '})
-            console.log('error from editproduct')
+        // Validate category
+        if (!category) {
+            return res.render('editProduct', { failuremessage: 'Invalid category selected.' });
         }
-        // res.json(categoryEdit)
+
+        // Validate and handle image files
+        let images = [];
+        if (req.files && req.files.length > 0) {
+            const allowedExtensions = /(\.jpg|\.jpeg|\.png|\.gif)$/i;
+
+            for (const file of req.files) {
+                if (!allowedExtensions.exec(file.filename)) {
+                    return res.render('editProduct', { failuremessage: 'Invalid file type. Only .jpg, .jpeg, .png, and .gif are allowed.', products: req.body });
+                }
+                images.push(file.filename);
+            }
+        } else {
+            console.log("No files uploaded.");
+        }
+
+        // Find and update the product
+        const product = await Product.findById(id).populate('category');
+        if (!product) {
+            return res.render('editProduct', { failuremessage: 'Product not found', products: product });
+        }
+
+        if (images.length > 0) {
+            product.images = [...product.images, ...images];
+        }
+        product.name = name;
+        product.description = description;
+        product.price = price;
+        product.promo_Price = promo_Price;
+        product.countInStock = countInStock;
+        product.category = category;
+
+        await product.save();
+
+        console.log("Product edited successfully");
+        res.redirect('/admin/productlist')
+        // res.render('editProduct', { products: product, successmessage: 'Product edited successfully' });
     } catch (error) {
-        
-        console.log('error from product controlle edit category',error);
+        console.error('Error from product controller edit product:', error.message);
+        res.status(500)
     }
-}
+};
 
 
 const deleteProduct=async(req,res)=>{
@@ -254,8 +201,25 @@ const productUnblock=async(req,res)=>{
     }
 }
 
+const deleteImage = async (req, res) => {
+    try {
+        console.log("entering delet image");
+        const { index, id } = req.query;
+        const product = await Product.findById(id);
 
+        if (!product || !product.images || product.images.length <= index) {
+            return res.status(400).json({ success: false, message: 'Invalid image index or product ID' });
+        }
 
+        product.images.splice(index, 1);
+        await product.save();
+
+        res.status(200).json({ success: true });
+    } catch (error) {
+        console.error("Error from product controller deleteImage: ", error);
+        res.status(500).json({ success: false, message: 'Internal server error' });
+    }
+};
 
 
 module.exports={
@@ -266,7 +230,8 @@ module.exports={
     editProduct,
     updateProduct,
     deleteProduct,
-    productUnblock
+    productUnblock,
+    deleteImage
 
 
 

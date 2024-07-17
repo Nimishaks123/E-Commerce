@@ -15,6 +15,91 @@
     <link rel="shortcut icon" type="image/x-icon" href="/user/assets/imgs/theme/favicon.svg">
     <!-- Template CSS -->
     <link rel="stylesheet" href="/user/assets/css/main.css?v=3.4">
+    <!-- <style>
+        .product-image-slider {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .product-image-slider figure {
+            width: 100%;
+            padding-top: 56.25%; /* 16:9 aspect ratio */
+            position: relative;
+            margin: 0;
+            overflow: hidden;
+            border-radius: 10px;
+        }
+
+        .product-image-slider figure img {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            object-fit: cover; /* Ensures the image covers the container without distortion */
+            border-radius: 10px;
+        }
+    </style> -->
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f4;
+            margin: 0;
+            padding: 20px;
+        }
+        .product-container {
+            max-width: 400px;
+            margin: 0 auto;
+            /* background: #fff; */
+            padding: 10px;
+            /* border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1); */
+        }
+        .product-container strong {
+            display: block;
+            margin-bottom: 10px;
+            font-size: 18px;
+        }
+        .form-group {
+            margin-bottom: 15px;
+        }
+        .form-label {
+            display: block;
+            font-size: 14px;
+            margin-bottom: 5px;
+        }
+        .form-select, .form-input {
+            width: 100%;
+            padding: 10px;
+            font-size: 14px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+        }
+        .form-button {
+            width: 100%;
+            padding: 10px;
+            font-size: 14px;
+            background: #007bff;
+            color: #fff;
+            cursor: pointer;
+            border: none;
+            border-radius: 4px;
+            transition: background 0.3s ease;
+        }
+        .form-button:hover {
+            background: #0056b3;
+        }
+        #message {
+            margin-top: 15px;
+            padding: 10px;
+            background: #f8d7da;
+            color: #721c24;
+            border: 1px solid #f5c6cb;
+            border-radius: 4px;
+            display: none;
+        }
+        </style>
 </head>
 
 <body>
@@ -131,7 +216,7 @@
                                         <a href="#" class="qty-up"><i class="fi-rs-angle-small-up"></i></a>
                                     </div>
                                     <div class="product-extra-link2">
-                                        <button type="submit" class="button button-add-to-cart">Add to cart</button>
+                                        <button  type="submit" class="button button-add-to-cart">Add to cart</button>
                                         <a aria-label="Add To Wishlist" class="action-btn hover-up" href="shop-wishlist.html"><i class="fi-rs-heart"></i></a>
                                         <a aria-label="Compare" class="action-btn hover-up" href="shop-compare.html"><i class="fi-rs-shuffle"></i></a>
                                     </div>
@@ -176,17 +261,17 @@
                         <div class="header-info header-info-right">
                             <ul>
                                 <li>
-                                    <a class="language-dropdown-active" href="#"> <i class="fi-rs-world"></i> English <i class="fi-rs-angle-small-down"></i></a>
-                                    <ul class="language-dropdown">
+                                    <!-- <a class="language-dropdown-active" href="#"> <i class="fi-rs-world"></i> English <i class="fi-rs-angle-small-down"></i></a> -->
+                                    <!-- <ul class="language-dropdown">
                                         <li><a href="#"><img src="/user/assets/imgs/theme/flag-fr.png" alt="">Français</a></li>
                                         <li><a href="#"><img src="/user/assets/imgs/theme/flag-dt.png" alt="">Deutsch</a></li>
                                         <li><a href="#"><img src="/user/assets/imgs/theme/flag-ru.png" alt="">Pусский</a></li>
-                                    </ul>
+                                    </ul> -->
                                 </li>
                                 <!-- <li><i class="fi-rs-user"></i><a href="page-login-register.html">Log In / Sign Up</a></li> -->
 
-                                <li><i class="fi-rs"></i><a href="/login-register"> Sign Up</a></li>
-                                <li><i class="fi-rs"></i><a href="/login">Log In</a></li>
+                                <!-- <li><i class="fi-rs"></i><a href="/login-register"> Sign Up</a></li> -->
+                                <li><i class="fi-rs"></i><a href="/Logout">Log out</a></li>
 
 
                             </ul>
@@ -203,7 +288,7 @@
                     </div>
                     <div class="header-right">
                         <div class="search-style-2">
-                            <form action="#">
+                            <!-- <form action="#">
                                 <select class="select-active">
                                     <option>All Categories</option>
                                     <option>Women's</option>
@@ -218,7 +303,7 @@
                                     <option>Mother & Kids</option>
                                 </select>
                                 <input type="text" placeholder="Search for items...">
-                            </form>
+                            </form> -->
                         </div>
                         <div class="header-action-right">
                             <div class="header-action-2">
@@ -229,7 +314,7 @@
                                     </a>
                                 </div>
                                 <div class="header-action-icon-2">
-                                    <a class="mini-cart-icon" href="shop-cart.html">
+                                    <a class="mini-cart-icon" href="/cart">
                                         <img alt="Evara" src="/user/assets/imgs/theme/icons/icon-cart.svg">
                                         <span class="pro-count blue">2</span>
                                     </a>
@@ -237,7 +322,7 @@
                                         <ul>
                                             <li>
                                                 <div class="shopping-cart-img">
-                                                    <a href="shop-product-right.html"><img alt="Evara" src="/user/assets/imgs/shop/thumbnail-3.jpg"></a>
+                                                    <a href="/cart"><img alt="Evara" src="/user/assets/imgs/shop/thumbnail-3.jpg"></a>
                                                 </div>
                                                 <div class="shopping-cart-title">
                                                     <h4><a href="shop-product-right.html">Daisy Casual Bag</a></h4>
@@ -285,9 +370,9 @@
                     </div>
                     <div class="header-nav d-none d-lg-flex">
                         <div class="main-categori-wrap d-none d-lg-block">
-                            <a class="categori-button-active" href="#">
+                            <!-- <a class="categori-button-active" href="#">
                                 <span class="fi-rs-apps"></span> Browse Categories
-                            </a>
+                            </a> -->
                             <div class="categori-dropdown-wrap categori-dropdown-active-large">
                                 <ul>
                                     <li class="has-children">
@@ -468,39 +553,39 @@
                         <div class="main-menu main-menu-padding-1 main-menu-lh-2 d-none d-lg-block">
                             <nav>
                                 <ul>
-                                    <li><a class="active" href="index.html">Home <i class="fi-rs-angle-down"></i></a>
-                                        <ul class="sub-menu">
+                                    <li><a class="active" href="/user_Home1">Home </a>
+                                        <!-- <ul class="sub-menu">
                                             <li><a href="index.html">Home 1</a></li>
                                             <li><a href="index-2.html">Home 2</a></li>
                                             <li><a href="index-3.html">Home 3</a></li>
                                             <li><a href="index-4.html">Home 4</a></li>
-                                        </ul>
+                                        </ul> -->
                                     </li>
                                     <li>
                                         <a href="page-about.html">About</a>
                                     </li>
-                                    <li><a href="shop-grid-right.html">Shop <i class="fi-rs-angle-down"></i></a>
+                                    <li><a href="/loadShop">Shop </a>
                                         <ul class="sub-menu">
-                                            <li><a href="shop-grid-right.html">Shop Grid – Right Sidebar</a></li>
+                                            <!-- <li><a href="shop-grid-right.html">Shop Grid – Right Sidebar</a></li>
                                             <li><a href="shop-grid-left.html">Shop Grid – Left Sidebar</a></li>
                                             <li><a href="shop-list-right.html">Shop List – Right Sidebar</a></li>
                                             <li><a href="shop-list-left.html">Shop List – Left Sidebar</a></li>
                                             <li><a href="shop-fullwidth.html">Shop - Wide</a></li>
-                                            <li><a href="#">Single Product <i class="fi-rs-angle-right"></i></a>
-                                                <ul class="level-menu">
+                                            <li><a href="#">Single Product <i class="fi-rs-angle-right"></i></a> -->
+                                                <!-- <ul class="level-menu">
                                                     <li><a href="shop-product-right.html">Product – Right Sidebar</a></li>
                                                     <li><a href="shop-product-left.html">Product – Left Sidebar</a></li>
                                                     <li><a href="shop-product-full.html">Product – No sidebar</a></li>
-                                                </ul>
-                                            </li>
+                                                </ul> -->
+                                            <!-- </li>
                                             <li><a href="shop-filter.html">Shop – Filter</a></li>
                                             <li><a href="shop-wishlist.html">Shop – Wishlist</a></li>
                                             <li><a href="shop-cart.html">Shop – Cart</a></li>
                                             <li><a href="shop-checkout.html">Shop – Checkout</a></li>
                                             <li><a href="shop-compare.html">Shop – Compare</a></li>
                                         </ul>
-                                    </li>
-                                    <li class="position-static"><a href="#">Mega menu <i class="fi-rs-angle-down"></i></a>
+                                    </li> -->
+                                    <!-- <li class="position-static"><a href="#">Mega menu <i class="fi-rs-angle-down"></i></a>
                                         <ul class="mega-menu">
                                             <li class="sub-mega-menu sub-mega-menu-width-22">
                                                 <a class="menu-title" href="#">Women's Fashion</a>
@@ -512,8 +597,8 @@
                                                     <li><a href="shop-product-right.html">Prom Dresses</a></li>
                                                     <li><a href="shop-product-right.html">Cosplay Costumes</a></li>
                                                 </ul>
-                                            </li>
-                                            <li class="sub-mega-menu sub-mega-menu-width-22">
+                                            </li> -->
+                                            <!-- <li class="sub-mega-menu sub-mega-menu-width-22">
                                                 <a class="menu-title" href="#">Men's Fashion</a>
                                                 <ul>
                                                     <li><a href="shop-product-right.html">Jackets</a></li>
@@ -556,8 +641,8 @@
                                                 </div>
                                             </li>
                                         </ul>
-                                    </li>
-                                    <li><a href="blog-category-grid.html">Blog <i class="fi-rs-angle-down"></i></a>
+                                    </li> -->
+                                    <!-- <li><a href="blog-category-grid.html">Blog <i class="fi-rs-angle-down"></i></a>
                                         <ul class="sub-menu">
                                             <li><a href="blog-category-grid.html">Blog Category Grid</a></li>
                                             <li><a href="blog-category-list.html">Blog Category List</a></li>
@@ -571,8 +656,8 @@
                                                 </ul>
                                             </li>
                                         </ul>
-                                    </li>
-                                    <li><a href="#">Pages <i class="fi-rs-angle-down"></i></a>
+                                    </li> -->
+                                    <!-- <li><a href="#">Pages <i class="fi-rs-angle-down"></i></a>
                                         <ul class="sub-menu">
                                             <li><a href="page-about.html">About Us</a></li>
                                             <li><a href="page-contact.html">Contact</a></li>
@@ -583,10 +668,10 @@
                                             <li><a href="page-terms.html">Terms of Service</a></li>
                                             <li><a href="page-404.html">404 Page</a></li>
                                         </ul>
-                                    </li>
-                                    <li>
+                                    </li> -->
+                                    <!-- <li>
                                         <a href="page-contact.html">Contact</a>
-                                    </li>
+                                    </li> -->
                                 </ul>
                             </nav>
                         </div>
@@ -823,92 +908,67 @@
         <div class="page-header breadcrumb-wrap">
             <div class="container">
                 <div class="breadcrumb">
-                    <a href="index.html" rel="nofollow">Home</a>
+                    <a href="/user_Home1" rel="nofollow">Home</a>
                     <span></span> Shop
                     <span></span> Product Details
                 </div>
             </div>
         </div>
+        
         <section class="mt-50 mb-50">
+          
             <div class="container">
+                
                 <div class="row">
+                    
                     <div class="col-lg-12">
+                        
+                        
                         <div class="product-detail accordion-detail">
+                            
                             <div class="row mb-50">
+                               
                                 <div class="col-md-6 col-sm-12 col-xs-12">
                                     <div class="detail-gallery">
                                         <span class="zoom-icon"><i class="fi-rs-search"></i></span>
                                         <!-- MAIN SLIDES -->
-                                        <div class="product-image-slider">
-                                            <figure class="border-radius-10">
-                                                <img src="/uploads/<%=products.image[0]%>" alt="product image">
-                                            </figure>
-                                            <figure class="border-radius-10">
-                                                <img src="/uploads/<%=products.image[0]%>" alt="product image">
-                                            </figure>
-                                            <figure class="border-radius-10">
-                                                <img src="/uploads/<%=products.image[0]%>" alt="product image">
-                                            </figure>
-                                            <figure class="border-radius-10">
-                                                <img src="/uploads/<%=products.image[0]%>" alt="product image">
-                                            </figure>
-                                            <figure class="border-radius-10">
-                                                <img src="/uploads/<%=products.image[0]%>" alt="product image">
-                                            </figure>
-                                            <figure class="border-radius-10">
-                                                <img src="/uploads/<%=products.image[0]%>" alt="product image">
-                                            </figure>
-                                            <figure class="border-radius-10">
-                                                <img src="/uploads/<%=products.image[0]%>" alt="product image">
-                                            </figure>
-                                            <figure class="border-radius-10">
-                                                <img src="/uploads/<%=products.image[0]%>" alt="product image">
-                                            </figure>
-                                            <figure class="border-radius-10">
-                                                <img src="/uploads/<%=products.image[0]%>" alt="product image">
-                                            </figure>
-                                            <figure class="border-radius-10">
-                                                <img src="/uploads/<%=products.image[0]%>" alt="product image">
-                                            </figure>
-
-                                            <!-- <figure class="border-radius-10">
-                                                <img src="/user/assets/imgs/shop/product-16-1.jpg" alt="product image">
-                                            </figure>
-                                            <figure class="border-radius-10">
-                                                <img src="/user/assets/imgs/shop/product-16-3.jpg" alt="product image">
-                                            </figure>
-                                            <figure class="border-radius-10">
-                                                <img src="/user/assets/imgs/shop/product-16-4.jpg" alt="product image">
-                                            </figure>
-                                            <figure class="border-radius-10">
-                                                <img src="/user/assets/imgs/shop/product-16-5.jpg" alt="product image">
-                                            </figure>
-                                            <figure class="border-radius-10">
-                                                <img src="/user/assets/imgs/shop/product-16-6.jpg" alt="product image">
-                                            </figure>
-                                            <figure class="border-radius-10">
-                                                <img src="/user/assets/imgs/shop/product-16-7.jpg" alt="product image">
-                                            </figure> -->
+                                         <div class="product-image-slider">
+                                         
+                                            <% for (let i =0 ; i<products.images.length;i++ ) {%>
+                                                <figure class="border-radius-10">
+                                                    <img src="/uploads/<%=products.images[i]%>" alt="product image" >
+                                                </figure>
+                                                <%}%>
+                                           
+                                        </div>
                                         </div>
                                         <!-- THUMBNAILS -->
                                         <div class="slider-nav-thumbnails pl-15 pr-15">
+                                            <% for (let i =0 ; i<products.images.length;i++ ) {%>
+                                                <div >
+                                                    <img src="/uploads/<%=products.images[i]%>" alt="product image" >
+                                                </div>
+                                                <%}%>
+                                                
+                                             
                                             <!-- <div><img src="/user/assets/imgs/shop/thumbnail-3.jpg" alt="product image"></div> -->
-                                             <div><img src="/uploads/<%=products.image[0]%>" alt="product image"></div> 
-                                             <div><img src="/uploads/<%=products.image[0]%>" alt="product image"></div> 
-                                             <div><img src="/uploads/<%=products.image[0]%>" alt="product image"></div> 
-                                             <div><img src="/uploads/<%=products.image[0]%>" alt="product image"></div> 
-                                             <div><img src="/uploads/<%=products.image[0]%>" alt="product image"></div> 
+                                             <!-- <div><img src="/uploads/<%=products.images[0]%>" alt="product image"></div> 
+                                             <div><img src="/uploads/<%=products.images[1]%>" alt="product image"></div> 
+                                             <div><img src="/uploads/<%=products.images[2]%>" alt="product image"></div> 
+                                             <div><img src="/uploads/<%=products.images[3]%>" alt="product image"></div>  -->
+                                             <!-- <div><img src="/uploads/<%=products.images[4]%>" alt="product image"></div>  -->
                                              
                                             
-                                            <div><img src="/user/assets/imgs/shop/thumbnail-4.jpg" alt="product image"></div>
+                                            <!-- <div><img src="/user/assets/imgs/shop/thumbnail-4.jpg" alt="product image"></div>
                                             <div><img src="/user/assets/imgs/shop/thumbnail-5.jpg" alt="product image"></div>
                                             <div><img src="/user/assets/imgs/shop/thumbnail-6.jpg" alt="product image"></div>
                                             <div><img src="/user/assets/imgs/shop/thumbnail-7.jpg" alt="product image"></div>
                                             <div><img src="/user/assets/imgs/shop/thumbnail-8.jpg" alt="product image"></div>
-                                            <div><img src="/user/assets/imgs/shop/thumbnail-9.jpg" alt="product image"></div>
-                                        </div>
-                                    </div>
+                                            <div><img src="/user/assets/imgs/shop/thumbnail-9.jpg" alt="product image"></div> -->
+                                        <!-- </div> -->
+                                  
                                     <!-- End Gallery -->
+                                        </div>
                                 </div>
                                 <div class="col-md-6 col-sm-12 col-xs-12">
                                     <div class="detail-info">
@@ -917,7 +977,7 @@
                                         <!-- <h2 class="title-detail">Colorful Pattern Shirts HD450</h2> -->
                                         <div class="product-detail-rating">
                                             <div class="pro-details-brand">
-                                                <span> Brands: <a href="shop-grid-right.html">Bootstrap</a></span>
+                                                <!-- <span> Brands: <a href="shop-grid-right.html">Bootstrap</a></span> -->
                                             </div>
                                             <div class="product-rate-cover text-end">
                                                 <div class="product-rate d-inline-block">
@@ -929,8 +989,8 @@
                                         </div>
                                         <div class="clearfix product-price-cover">
                                             <div class="product-price primary-color float-left">
-                                                <ins><span class="text-brand">$120.00</span></ins>
-                                                <ins><span class="old-price font-md ml-15">$200.00</span></ins>
+                                                <ins><span class="text-brand">₹<%=products.price%></span></ins>
+                                                <ins><span class="old-price font-md ml-15">₹<%=products.promo_Price%></span></ins>
                                                 <span class="save-price  font-md color3 ml-15">25% Off</span>
                                             </div>
                                         </div>
@@ -946,7 +1006,7 @@
                                             </ul>
                                         </div>
                                         <div class="attr-detail attr-color mb-15">
-                                            <strong class="mr-10">Color</strong>
+                                            <!-- <strong class="mr-10">Color</strong>
                                             <ul class="list-filter color-filter">
                                                 <li><a href="#" data-color="Red"><span class="product-color-red"></span></a></li>
                                                 <li><a href="#" data-color="Yellow"><span class="product-color-yellow"></span></a></li>
@@ -955,40 +1015,112 @@
                                                 <li><a href="#" data-color="Cyan"><span class="product-color-cyan"></span></a></li>
                                                 <li><a href="#" data-color="Green"><span class="product-color-green"></span></a></li>
                                                 <li><a href="#" data-color="Purple"><span class="product-color-purple"></span></a></li>
-                                            </ul>
+                                            </ul> -->
                                         </div>
-                                        <div class="attr-detail attr-size">
-                                            <strong class="mr-10">Size</strong>
-                                            <ul class="list-filter size-filter font-small">
-                                                <li><a href="#">S</a></li>
-                                                <li class="active"><a href="#">M</a></li>
-                                                <li><a href="#">L</a></li>
-                                                <li><a href="#">XL</a></li>
-                                                <li><a href="#">XXL</a></li>
-                                            </ul>
-                                        </div>
-                                        <div class="bt-1 border-color-1 mt-30 mb-30"></div>
-                                        <div class="detail-extralink">
-                                            <div class="detail-qty border radius">
-                                                <a href="#" class="qty-down"><i class="fi-rs-angle-small-down"></i></a>
-                                                <span class="qty-val">1</span>
-                                                <a href="#" class="qty-up"><i class="fi-rs-angle-small-up"></i></a>
+                                        <form action="/cart?productId=<%=products._id%>" method="post">  
+
+                                        <div >
+                                            <% if (products.sizes && products.sizes.length > 0) { %>
+                                                <div class="form-group">
+                                                    <strong>Size & Quantity</strong>
+                                                    <label for="sizeSelect" class="form-label">Select Size</label>
+                                                    <select name="size" id="sizeSelect" class="form-select">
+                                                        <% products.sizes.forEach(size => { %>
+                                                            <option  value="<%= size.size %>" data-quantity="<%= size.quantity %>"><%= size.size %></option>
+                                                        <% }) %>
+                                                    </select>
+                                                </div>
+                                            <% } %>
+                                            
+                                            <div class="form-group">
+                                                <label for="userQuantity" class="form-label" >Enter Quantity:</label>
+                                                <input type="number" id="userQuantity" name="quantity" class="form-input" min="1" value="1" oninput="checkQuantity()">
                                             </div>
+                                        
+                                            <div id="message">
+                                                <p id="messageText"></p>
+                                            </div>
+                                        </div>
+                                        
+                                       <!--- <% if (products.sizes && products.sizes.length > 0) { %>-->
+                                            <!-- <div class="form-group">
+                                                <strong>Size & Quantity</strong>
+                                                <label for="sizeSelect" class="form-label">Select Size</label>
+                                                <select id="sizeSelect" class="form-select"> -->
+                                                
+                                            <!--<% let total = 0; %>
+                                            <% products.sizes.forEach(size => { %>-->
+                                                <!-- <option value="<%= size.size %>" data-quantity="<%= size.quantity %>"><%= size.size %></option> -->
+                                                <!--<% total += size.quantity; %>
+                                            <% }); %>
+                                        
+                                            <% if (total < 10 && total > 0) { %>
+                                                <li class="mb-5"><span class="text-danger">Only few Items Available: <%= total %></span></li> 
+                                            <% } else if (total <= 0) { %>
+                                                <li class="mb-5 text-danger">Out of stock! </li> 
+                                            <% } else { %>
+                                                <li class="mb-5 text-success">Items are available: <%= total %></li> 
+                                            <% } %>
+                                        
+                                            <!-- </select> -->
+                                        <!-- </div> -->
+                                        <!--<% } %>-->
+                                        
+                                                <!-- <a href="/cart?productId=<%=products._id%>"></a> -->
+                                                <% if (products.sizes && products.sizes.length > 0) { %>
+                                                    <!-- <div class="form-group">
+                                                        <strong>Size & Quantity</strong>
+                                                        <label for="sizeSelect" class="form-label">Select Size</label>
+                                                        <select id="sizeSelect" class="form-select"> -->
+                                                        
+                                                    <% let total = 0; %>
+                                                    <% products.sizes.forEach(size => { %>
+                                                        <!-- <option value="<%= size.size %>" data-quantity="<%= size.quantity %>"><%= size.size %></option> -->
+                                                        <% total += size.quantity; %>
+                                                    <% }); %>
+                                                
+                                                    <% let outOfStock = total <= 0; %>
+                                                    <% let fewItems = total < 10 && total > 0; %>
+                                                
+                                                    <% if (fewItems) { %>
+                                                        <li class="mb-5"><span class="text-danger">Only <%= total %> Items are Available: </span></li> 
+                                                    <% } else if (outOfStock) { %>
+                                                        <li class="mb-5 text-danger">Out of stock: </li> 
+                                                    <% } else { %>
+                                                        <li class="mb-5 text-success"><%= total %>  Items are available: </li> 
+                                                    <% } %>
+                                                
+                                                
+                                                
                                             <div class="product-extra-link2">
-                                                <button type="submit" class="button button-add-to-cart">Add to cart</button>
+                                                <button type="submit"  id="addToCartButton" class="button button-add-to-cart" <% if (outOfStock) { %>disabled<% } %> >Add to cart</button>
                                                 <a aria-label="Add To Wishlist" class="action-btn hover-up" href="shop-wishlist.html"><i class="fi-rs-heart"></i></a>
                                                 <a aria-label="Compare" class="action-btn hover-up" href="shop-compare.html"><i class="fi-rs-shuffle"></i></a>
                                             </div>
-                                        </div>
+                                        </form>
+                                        
                                         <ul class="product-meta font-xs color-grey mt-50">
                                             <li class="mb-5">SKU: <a href="#">FWM15VKT</a></li>
                                             <li class="mb-5">Tags: <a href="#" rel="tag">Cloth</a>, <a href="#" rel="tag">Women</a>, <a href="#" rel="tag">Dress</a> </li>
-                                            <li>Availability:<span class="in-stock text-success ml-5">8 Items In Stock</span></li>
+                                            <!-- <% if (products.countInStock < 1) { %>
+                                                <li class="mb-5">Out of stock</li>
+                                            <% } else if (products.countInStock <= 5) { %>
+                                                <li class="mb-5">Only Few Items Left</li>
+                                            <% } else { %>
+                                                <li class="mb-5">Items Available</li>
+                                            <% } %> -->
+                                            
+
+                                            <!-- <li>Availability:<span class="in-stock text-success ml-5">8 Items In Stock</span></li> -->
+                                             <!-- <li>Availability:<span class="in-stock text-success ml-5"><%=products.countInStock%></span></li>  -->
+
                                         </ul>
                                     </div>
                                     <!-- Detail Info -->
                                 </div>
                             </div>
+                            </div>
+                            <% } %>
                             <div class="row">
                                 <div class="col-lg-10 m-auto entry-main-content">
                                     <h2 class="section-title style-1 mb-30">Description</h2>
@@ -998,14 +1130,15 @@
                                             besides and much circa far over the bucolically hey precarious goldfinch mastodon goodness gnashed a jellyfish and one however because.
                                         </p>
                                         <ul class="product-more-infor mt-30">
-                                            <li><span>Type Of Packing</span> Bottle</li>
+                                            <h2 class="section-title style-1 mb-30">Highlights of products</h2>
+                                            <li><span>Material Type</span> <%=products.name%></li>
                                             <li><span>Color</span> Green, Pink, Powder Blue, Purple</li>
-                                            <li><span>Quantity Per Case</span> 100ml</li>
-                                            <li><span>Ethyl Alcohol</span> 70%</li>
-                                            <li><span>Piece In One</span> Carton</li>
+                                            <li><span>Quantity in stock</span><%=products.countInStock%> </li>
+                                            <!-- <li><span>Ethyl Alcohol</span> 70%</li> -->
+                                            <li><span>Style</span> Regular</li>
                                         </ul>
                                         <hr class="wp-block-separator is-style-dots">
-                                        <p>Laconic overheard dear woodchuck wow this outrageously taut beaver hey hello far meadowlark imitatively egregiously hugged that yikes minimally unanimous pouted flirtatiously as beaver beheld above forward
+                                        <!-- <p>Laconic overheard dear woodchuck wow this outrageously taut beaver hey hello far meadowlark imitatively egregiously hugged that yikes minimally unanimous pouted flirtatiously as beaver beheld above forward
                                             energetic across this jeepers beneficently cockily less a the raucously that magic upheld far so the this where crud then below after jeez enchanting drunkenly more much wow callously irrespective limpet.</p>
                                         <h4 class="mt-30">Packaging & Delivery</h4>
                                         <hr class="wp-block-separator is-style-wide">
@@ -1015,9 +1148,9 @@
                                         <p>Scallop or far crud plain remarkably far by thus far iguana lewd precociously and and less rattlesnake contrary caustic wow this near alas and next and pled the yikes articulate about as less cackled dalmatian
                                             in much less well jeering for the thanks blindly sentimental whimpered less across objectively fanciful grimaced wildly some wow and rose jeepers outgrew lugubrious luridly irrationally attractively
                                             dachshund.
-                                        </p>
+                                        </p> -->
                                     </div>
-                                    <h3 class="section-title style-1 mb-30">Additional info</h3>
+                                    <!-- <h3 class="section-title style-1 mb-30">Additional info</h3>
                                     <table class="font-md mb-30">
                                         <tbody>
                                             <tr class="stand-up">
@@ -1105,7 +1238,7 @@
                                                 </td>
                                             </tr>
                                         </tbody>
-                                    </table>
+                                    </table> -->
                                     <div class="social-icons single-share">
                                         <ul class="text-grey-5 d-inline-block">
                                             <li><strong class="mr-10">Share this:</strong></li>
@@ -1266,7 +1399,7 @@
                                     </div>
                                 </div>
                             </div>
-                            <div class="row mt-60">
+                            <!-- <div class="row mt-60">
                                 <div class="col-12">
                                     <h3 class="section-title style-1 mb-30">Related products</h3>
                                 </div>
@@ -1402,7 +1535,114 @@
                                         </div>
                                     </div>
                                 </div>
-                            </div>
+                            </div> -->
+                            <!---- <div class="row mt-60">
+                                <div class="col-12">
+                                    <h3 class="section-title style-1 mb-30">Related products</h3>
+                                </div>
+                               <%productDetail.forEach(product=>{%>
+                                <div class="col-12">
+                                    <div class="row related-products">
+                                        <div class="col-lg-3 col-md-4 col-12 col-sm-6">
+                                            <div class="product-cart-wrap small hover-up">
+                                                <div class="product-img-action-wrap">
+                                                    <div class="product-img product-img-zoom">
+                                                        <div class="product-img product-img-zoom">
+                                                            <a href="/productDetails?productId=<%=product._id%>" tabindex="0">
+                                                          
+                                                         <a href="shop-product-right.html" tabindex="0"> -->
+                                                            <!-- <img src="/uploads/<%=product.images[0]%>" class="default-img" alt="Item"> -->
+                                                            <!-- <div class="product-image-slider"> -->
+                                                                <!-- <figure class="border-radius-10">
+                                                                    <img src="/uploads/<%=product.images[0]%>" alt="product image" >
+                                                                </figure>
+                                                            </a> -->
+                                                        
+                                                            <!-- <img class="default-img" src="/user/assets/imgs/shop/product-2-1.jpg" alt="">
+                                                            <img class="hover-img" src="/user/assets/imgs/shop/product-2-2.jpg" alt=""> -->
+                                                        <!-- </a>
+                                                    </div>
+                                                    <div class="product-action-1">
+                                                        <a aria-label="Quick view" class="action-btn small hover-up" data-bs-toggle="modal" data-bs-target="#quickViewModal
+"><i class="fi-rs-search"></i></a>
+                                                        <a aria-label="Add To Wishlist" class="action-btn small hover-up" href="shop-wishlist.html" tabindex="0"><i class="fi-rs-heart"></i></a>
+                                                        <a aria-label="Compare" class="action-btn small hover-up" href="shop-compare.html" tabindex="0"><i class="fi-rs-shuffle"></i></a>
+                                                    </div>
+                                                    <div class="product-badges product-badges-position product-badges-mrg">
+                                                        <span class="hot">Hot</span>
+                                                    </div>
+                                                </div>
+                                                <div class="product-content-wrap">
+                                                    <h2><%=product.name%></a></h2>
+                                                    <div class="rating-result" title="90%">
+                                                        <span>
+                                                        </span>
+                                                    </div>
+                                                    <div class="product-price">
+                                                        <span><%=product.price%> </span>
+                                                        <span class="old-price"><%=product.promo_Price%></span>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <%})%>
+                                        </div> --> 
+                                        <div class="row mt-60">
+                                            <div class="col-12">
+                                                <h3 class="section-title style-1 mb-30">Related products</h3>
+                                            </div>
+                                        <div class="row product-grid-3">
+                                            <%productDetail.forEach(product=>{%>
+                                            <div class="col-lg-3 col-md-4">
+                                                <div class="product-cart-wrap mb-30">
+                                                    <div class="product-img-action-wrap">
+                                                        <div class="product-img product-img-zoom">
+                                                            <a href="/productDetails?productId=<%=product._id%>">
+                                                                <!-- <img class="default-img" src="/user/assets/imgs/shop/product-2-1.jpg" alt=""> -->
+                                                                <!-- <img class="hover-img" src="/user/assets/imgs/shop/product-2-2.jpg" alt=""> -->
+                                                                <img src="/uploads/<%=product.images[0]%>" class="default-img" alt="Item">
+                                                            </a>
+                                                            
+                                                        </div>
+                                                        <div class="product-action-1">
+                                                            <a aria-label="Quick view" class="action-btn hover-up" data-bs-toggle="modal" data-bs-target="#quickViewModal">
+                <i class="fi-rs-search"></i></a>
+                                                            <a aria-label="Add To Wishlist" class="action-btn hover-up" href="shop-wishlist.html"><i class="fi-rs-heart"></i></a>
+                                                            <a aria-label="Compare" class="action-btn hover-up" href="shop-compare.html"><i class="fi-rs-shuffle"></i></a>
+                                                        </div>
+                                                        <div class="product-badges product-badges-position product-badges-mrg">
+                                                            <span class="hot">Hot</span>
+                                                        </div>
+                                                    </div>
+                                                    <div class="product-content-wrap">
+                                                        <div class="product-category">
+                                                            <!-- <a href="shop-grid-right.html">Music</a> -->
+                                                        </div>
+                                                        <!-- <h2><a href="shop-product-right.html">Colorful Pattern Shirts</a></h2> -->
+                                                          <h2><a href=""><%=product.name%></a></h2> 
+                                                        <div class="rating-result" title="80%">
+                                                            <span>
+                                                                <span>80%</span>
+                                                            </span>
+                                                        </div>
+                                                        <div class="product-price">
+                                                            <span>₹<%=product.price%> </span>
+                                                            <!-- <span>₹<%=product.price+50%> </span> -->
+                                                            <span class="old-price">₹<%=product.promo_Price%></span>
+                                                        </div>
+                                                        <div class="product-action-1 show">
+                                                            <a aria-label="Add To Cart" class="action-btn hover-up" href="shop-cart.html"><i class="fi-rs-shopping-bag-add"></i></a>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <%})%>
+                                            </div>
+                                            </div>
+
+
+
+
+
                             <div class="banner-img banner-big wow fadeIn f-none animated mt-50">
                                 <img class="border-radius-10" src="/user/assets/imgs/banner/banner-4.png" alt="">
                                 <div class="banner-text">
@@ -1566,6 +1806,23 @@
     <!-- Template  JS -->
     <script src=".//user/assets/js/main.js?v=3.4"></script>
     <script src=".//user/assets/js/shop.js?v=3.4"></script>
+    <script>
+       function checkQuantity() {
+        const selectedSize = document.getElementById('sizeSelect');
+        const userQuantity = parseInt(document.getElementById('userQuantity').value);
+        const availableQuantity = parseInt(selectedSize.options[selectedSize.selectedIndex].dataset.quantity);
+
+        const messageDiv = document.getElementById('message');
+        const messageText = document.getElementById('messageText');
+
+        if (userQuantity > availableQuantity) {
+            messageText.textContent = `Error: Only ${availableQuantity} items available for size ${selectedSize.value}.`;
+            messageDiv.style.display = 'block';
+        } else {
+            messageDiv.style.display = 'none';
+        }
+    }
+    </script>
 </body>
 
 </html>

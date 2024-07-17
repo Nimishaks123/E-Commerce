@@ -15,6 +15,101 @@
     <link rel="shortcut icon" type="image/x-icon" href="/user/assets/imgs/theme/favicon.svg">
     <!-- Template CSS -->
     <link rel="stylesheet" href="/user/assets/css/main.css?v=3.4">
+    <style>
+        .select-active {
+            width: 100%;
+            padding: 10px;
+            border-radius: 5px;
+            border: 1px solid #ced4da;
+            font-size: 16px;
+            margin-bottom: 10px;
+            appearance: none;
+            -webkit-appearance: none;
+            -moz-appearance: none;
+            background: #f8f9fa;
+            background-image: url("data:image/svg+xml;utf8,<svg fill='%23343a40' height='20' viewBox='0 0 20 20' width='20' xmlns='http://www.w3.org/2000/svg'><path d='M0 0h20v20H0z' fill='none'/><path d='M10 12l5-5H5l5 5z'/></svg>");
+            background-repeat: no-repeat;
+            background-position: right 10px center;
+        }
+        .form-control {
+            width: 100%;
+            padding: 10px;
+            border-radius: 5px;
+            border: 1px solid #ced4da;
+            font-size: 16px;
+            margin-bottom: 10px;
+        }
+        .sort-by-product-area {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-top: 20px;
+        }
+        .sort-by-product-wrap {
+            display: flex;
+            align-items: center;
+        }
+        .sort-by-dropdown {
+            position: absolute;
+            background: white;
+            border: 1px solid #ced4da;
+            border-radius: 5px;
+            padding: 10px;
+            display: none;
+            z-index: 1000;
+        }
+        .sort-by-dropdown ul {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+        .sort-by-dropdown ul li {
+            padding: 5px 0;
+        }
+        .sort-by-dropdown ul li a {
+            text-decoration: none;
+            color: #343a40;
+            display: block;
+            padding: 5px 10px;
+            border-radius: 5px;
+        }
+        .sort-by-dropdown ul li a:hover,
+        .sort-by-dropdown ul li a.active {
+            background-color: #007bff;
+            color: white;
+        }
+        .sort-by-cover:hover .sort-by-dropdown {
+            display: block;
+        }
+        product-action-1 form {
+    display: inline;
+}
+
+.product-action-1 form button {
+    border: none;
+    background: none;
+    padding: 0;
+    cursor: pointer;
+    display: inline-block;
+}
+
+.product-action-1 form button i {
+    font-size: inherit;
+    color: inherit;
+}
+
+/* Additional styling for hover and active states */
+.product-action-1 form button:hover,
+.product-action-1 form button:focus {
+    border: 1px solid #046963; /* Green border */
+    outline: none; /* Remove default focus outline */
+}
+
+.product-action-1 form button:hover i,
+.product-action-1 form button:focus i {
+    color: #046963; /* Change icon color to match border */
+}
+    </style>
 </head>
 
 <body>
@@ -132,7 +227,7 @@
                                     </div>
                                     <div class="product-extra-link2">
                                         <button type="submit" class="button button-add-to-cart">Add to cart</button>
-                                        <a aria-label="Add To Wishlist" class="action-btn hover-up" href="shop-wishlist.html"><i class="fi-rs-heart"></i></a>
+                                         <a aria-label="Add To Wishlist" class="action-btn hover-up" href="#"><i class="fi-rs-heart"></i></a>
                                         <a aria-label="Compare" class="action-btn hover-up" href="shop-compare.html"><i class="fi-rs-shuffle"></i></a>
                                     </div>
                                 </div>
@@ -176,16 +271,16 @@
                         <div class="header-info header-info-right">
                             <ul>
                                 <li>
-                                    <a class="language-dropdown-active" href="#"> <i class="fi-rs-world"></i> English <i class="fi-rs-angle-small-down"></i></a>
+                                    <!-- <a class="language-dropdown-active" href="#"> <i class="fi-rs-world"></i> English <i class="fi-rs-angle-small-down"></i></a> -->
                                     <ul class="language-dropdown">
-                                        <li><a href="#"><img src="/user/assets/imgs/theme/flag-fr.png" alt="">Français</a></li>
+                                        <!-- <li><a href="#"><img src="/user/assets/imgs/theme/flag-fr.png" alt="">Français</a></li>
                                         <li><a href="#"><img src="/user/assets/imgs/theme/flag-dt.png" alt="">Deutsch</a></li>
-                                        <li><a href="#"><img src="/user/assets/imgs/theme/flag-ru.png" alt="">Pусский</a></li>
+                                        <li><a href="#"><img src="/user/assets/imgs/theme/flag-ru.png" alt="">Pусский</a></li> -->
                                     </ul>
                                 </li>
                                 <!-- <li><i class="fi-rs-user"></i><a href="page-login-register.html">Log In / Sign Up</a></li> -->
-                                <li><i class="fi-rs"></i><a href="/login-register"> Sign Up</a></li>
-                                <li><i class="fi-rs"></i><a href="/login">Log In</a></li>
+                                <!-- <li><i class="fi-rs"></i><a href="/login-register"> Sign Up</a></li> -->
+                                <li><i class="fi-rs"></i><a href="/logout">Log out</a></li>
                             </ul>
                         </div>
                     </div>
@@ -200,8 +295,9 @@
                     </div>
                     <div class="header-right">
                         <div class="search-style-2">
-                            <form action="#">
-                                <select class="select-active">
+                            <form id="filterForm" method="GET" action="/loadShop" class="form-inline">
+                            <!-- <form method="GET" action="/loadShop"> -->
+                                <!-- <select class="select-active">
                                     <option>All Categories</option>
                                     <option>Women's</option>
                                     <option>Men's</option>
@@ -213,24 +309,39 @@
                                     <option>Luggage</option>
                                     <option>Shoes</option>
                                     <option>Mother & Kids</option>
+                                </select> -->
+                                <select class="select-active" name="category" onchange="submitForm()">
+                                <!-- <select class="select-active" name="category"> -->
+                                    <option value="">All Categories</option>
+                                    <% categories.forEach(function(category) { %>
+                                        <option value="<%= category.name %>" <%= category.name === selectedCategory ? 'selected' : '' %>><%= category.name %></option>
+                                    <% }); %>
                                 </select>
-                                <input type="text" placeholder="Search for items...">
+                                <!-- <input type="text" placeholder="Search for items..."> -->
+                                <div class="form-group mr-3">
+
+                                <input type="text" class="form-control" name="search" placeholder="Search Products" value="<%= searchQuery %>" onchange="submitForm()">
+                            </div>
+                                <input type="hidden" id="sort" name="sort" value="<%= sortBy %>">
+                                <!-- <button type="submit">Filter</button> -->
                             </form>
+
+                           
                         </div>
                         <div class="header-action-right">
                             <div class="header-action-2">
                                 <div class="header-action-icon-2">
-                                    <a href="shop-wishlist.html">
+                                    <a href="/wishlist">
                                         <img class="svgInject" alt="Evara" src="/user/assets/imgs/theme/icons/icon-heart.svg">
-                                        <span class="pro-count blue">4</span>
+                                        <span class="pro-count blue"><%=wishlists%></span>
                                     </a>
                                 </div>
                                 <div class="header-action-icon-2">
-                                    <a class="mini-cart-icon" href="shop-cart.html">
+                                    <a class="mini-cart-icon" href="/cart">
                                         <img alt="Evara" src="/user/assets/imgs/theme/icons/icon-cart.svg">
-                                        <span class="pro-count blue">2</span>
+                                        <span class="pro-count blue"><%=cart%></span>
                                     </a>
-                                    <div class="cart-dropdown-wrap cart-dropdown-hm2">
+                                    <!-- <div class="cart-dropdown-wrap cart-dropdown-hm2">
                                         <ul>
                                             <li>
                                                 <div class="shopping-cart-img">
@@ -266,7 +377,7 @@
                                                 <a href="shop-checkout.html">Checkout</a>
                                             </div>
                                         </div>
-                                    </div>
+                                    </div> -->
                                 </div>
                             </div>
                         </div>
@@ -282,9 +393,9 @@
                     </div>
                     <div class="header-nav d-none d-lg-flex">
                         <div class="main-categori-wrap d-none d-lg-block">
-                            <a class="categori-button-active" href="#">
+                            <!-- <a class="categori-button-active" href="#">
                                 <span class="fi-rs-apps"></span> Browse Categories
-                            </a>
+                            </a> -->
                             <div class="categori-dropdown-wrap categori-dropdown-active-large">
                                 <ul>
                                     <li class="has-children">
@@ -465,19 +576,19 @@
                         <div class="main-menu main-menu-padding-1 main-menu-lh-2 d-none d-lg-block">
                             <nav>
                                 <ul>
-                                    <li><a class="active" href="index.html">Home <i class="fi-rs-angle-down"></i></a>
-                                        <ul class="sub-menu">
+                                    <li><a  href="user_Home1">Home </a>
+                                        <!-- <ul class="sub-menu">
                                             <li><a href="index.html">Home 1</a></li>
                                             <li><a href="index-2.html">Home 2</a></li>
                                             <li><a href="index-3.html">Home 3</a></li>
                                             <li><a href="index-4.html">Home 4</a></li>
-                                        </ul>
+                                        </ul> -->
                                     </li>
                                     <li>
                                         <a href="page-about.html">About</a>
                                     </li>
-                                    <li><a href="shop-grid-right.html">Shop <i class="fi-rs-angle-down"></i></a>
-                                        <ul class="sub-menu">
+                                    <li><a href="loadShop" class="active">Shop </a>
+                                        <!-- <ul class="sub-menu">
                                             <li><a href="shop-grid-right.html">Shop Grid – Right Sidebar</a></li>
                                             <li><a href="shop-grid-left.html">Shop Grid – Left Sidebar</a></li>
                                             <li><a href="shop-list-right.html">Shop List – Right Sidebar</a></li>
@@ -495,9 +606,9 @@
                                             <li><a href="shop-cart.html">Shop – Cart</a></li>
                                             <li><a href="shop-checkout.html">Shop – Checkout</a></li>
                                             <li><a href="shop-compare.html">Shop – Compare</a></li>
-                                        </ul>
+                                        </ul> -->
                                     </li>
-                                    <li class="position-static"><a href="#">Mega menu <i class="fi-rs-angle-down"></i></a>
+                                    <!-- <li class="position-static"><a href="#">Mega menu <i class="fi-rs-angle-down"></i></a>
                                         <ul class="mega-menu">
                                             <li class="sub-mega-menu sub-mega-menu-width-22">
                                                 <a class="menu-title" href="#">Women's Fashion</a>
@@ -553,8 +664,8 @@
                                                 </div>
                                             </li>
                                         </ul>
-                                    </li>
-                                    <li><a href="blog-category-grid.html">Blog <i class="fi-rs-angle-down"></i></a>
+                                    </li> -->
+                                    <!-- <li><a href="blog-category-grid.html">Blog <i class="fi-rs-angle-down"></i></a>
                                         <ul class="sub-menu">
                                             <li><a href="blog-category-grid.html">Blog Category Grid</a></li>
                                             <li><a href="blog-category-list.html">Blog Category List</a></li>
@@ -580,9 +691,9 @@
                                             <li><a href="page-terms.html">Terms of Service</a></li>
                                             <li><a href="page-404.html">404 Page</a></li>
                                         </ul>
-                                    </li>
+                                    </li> -->
                                     <li>
-                                        <a href="page-contact.html">Contact</a>
+                                        <a href="/profile">Profile</a>
                                     </li>
                                 </ul>
                             </nav>
@@ -595,7 +706,7 @@
                     <div class="header-action-right d-block d-lg-none">
                         <div class="header-action-2">
                             <div class="header-action-icon-2">
-                                <a href="shop-wishlist.html">
+                                <a href="/wishlist">
                                     <img alt="Evara" src="/user/assets/imgs/theme/icons/icon-heart.svg">
                                     <span class="pro-count white">4</span>
                                 </a>
@@ -603,9 +714,9 @@
                             <div class="header-action-icon-2">
                                 <a class="mini-cart-icon" href="shop-cart.html">
                                     <img alt="Evara" src="/user/assets/imgs/theme/icons/icon-cart.svg">
-                                    <span class="pro-count white">2</span>
+                                    <span class="pro-count white"><%=cart%></span>
                                 </a>
-                                <div class="cart-dropdown-wrap cart-dropdown-hm2">
+                                <!-- <div class="cart-dropdown-wrap cart-dropdown-hm2">
                                     <ul>
                                         <li>
                                             <div class="shopping-cart-img">
@@ -642,7 +753,7 @@
                                         </div>
                                     </div>
                                 </div>
-                            </div>
+                            </div> -->
                             <div class="header-action-icon-2 d-block d-lg-none">
                                 <div class="burger-icon burger-icon-white">
                                     <span class="burger-icon-top"></span>
@@ -820,7 +931,7 @@
         <div class="page-header breadcrumb-wrap">
             <div class="container">
                 <div class="breadcrumb">
-                    <a href="index.html" rel="nofollow">Home</a>
+                    <a href="/user_Home1" rel="nofollow">Home</a>
                     <span></span> Shop
                 </div>
             </div>
@@ -831,7 +942,7 @@
                     <div class="col-lg-12">
                         <div class="shop-product-fillter">
                             <div class="totall-product">
-                                <p> We found <strong class="text-brand">688</strong> items for you!</p>
+                                <p> We found <strong class="text-brand"><%=totalProducts%></strong> items for you!</p>
                             </div>
                             <div class="sort-by-product-area">
                                 <div class="sort-by-cover mr-10">
@@ -840,7 +951,7 @@
                                             <span><i class="fi-rs-apps"></i>Show:</span>
                                         </div>
                                         <div class="sort-by-dropdown-wrap">
-                                            <span> 50 <i class="fi-rs-angle-small-down"></i></span>
+                                            <span><%=limit%> <i class="fi-rs-angle-small-down"></i></span>
                                         </div>
                                     </div>
                                     <div class="sort-by-dropdown">
@@ -859,16 +970,25 @@
                                             <span><i class="fi-rs-apps-sort"></i>Sort by:</span>
                                         </div>
                                         <div class="sort-by-dropdown-wrap">
-                                            <span> Featured <i class="fi-rs-angle-small-down"></i></span>
+                                            <span> <%= (sortBy === 'new-arrivals') ? 'New Arrivals' :
+                                                (sortBy === 'popularity') ? 'Popularity' :
+                                                (sortBy === 'featured') ? 'Featured' :
+                                                (sortBy === 'high-to-low') ? 'Price: High to Low' :
+                                                (sortBy === 'low-to-high') ? 'Price: Low to High' :
+                                                (sortBy === 'aA-zZ') ? 'Aa - Zz' :
+                                                (sortBy === 'zZ-aA') ? 'Zz - Aa' : 'New Arrivals' %> <i class="fi-rs-angle-small-down"></i></span>
                                         </div>
                                     </div>
                                     <div class="sort-by-dropdown">
                                         <ul>
-                                            <li><a class="active" href="#">Featured</a></li>
-                                            <li><a href="#">Price: Low to High</a></li>
-                                            <li><a href="#">Price: High to Low</a></li>
-                                            <li><a href="#">Release Date</a></li>
-                                            <li><a href="#">Avg. Rating</a></li>
+                                            <li><a class="<%= (sortBy === 'new-arrivals')? 'active' : '' %>" href="#" onclick="setSort('new-arrivals')">New Arrivals</a></li>
+                                            <li><a class="<%= (sortBy === 'popularity')? 'active' : '' %>" href="#" onclick="setSort('popularity')">Popularity</a></li>
+                                            <li><a class="<%= (sortBy === 'high-to-low')? 'active' : '' %>" href="#" onclick="setSort('high-to-low')">Price: High to Low</a></li>
+                                            <li><a class="<%= (sortBy === 'low-to-high')? 'active' : '' %>" href="#" onclick="setSort('low-to-high')">Price: Low to High</a></li>
+                                            <li><a class="<%= (sortBy === 'aA-zZ')? 'active' : '' %>" href="#" onclick="setSort('aA-zZ')">aA - zZ</a></li>
+                                            <li><a class="<%= (sortBy === 'zZ-aA')? 'active' : '' %>" href="#" onclick="setSort('zZ-aA')">zZ - aA</a></li>                                            
+                                            <!-- <li><a href="#">Release Date</a></li>
+                                            <li><a href="#">Avg. Rating</a></li> -->
                                         </ul>
                                     </div>
                                 </div>
@@ -876,52 +996,62 @@
                         </div>
                         
                         <div class="row product-grid-3">
-                            <%products.forEach(product=>{%>
-                            <div class="col-lg-3 col-md-4">
-                                <div class="product-cart-wrap mb-30">
-                                    <div class="product-img-action-wrap">
-                                        <div class="product-img product-img-zoom">
-                                            <a href="/productDetails?productId=<%=product._id%>">
-                                                <!-- <img class="default-img" src="/user/assets/imgs/shop/product-2-1.jpg" alt=""> -->
-                                                <!-- <img class="hover-img" src="/user/assets/imgs/shop/product-2-2.jpg" alt=""> -->
-                                                <img src="/uploads/<%=product.image[0]%>" class="default-img" alt="Item">
-                                            </a>
-                                            
+                            <% products.forEach(product => { %>
+                                <% if (product.isDelete !== true) { %>
+                                <div class="col-lg-3 col-md-4">
+                                    <div class="product-cart-wrap mb-30">
+                                        <div class="product-img-action-wrap">
+                                            <div class="product-img product-img-zoom">
+                                                <a href="/productDetails?productId=<%= product._id %>">
+                                                    <img src="/uploads/<%= product.images[0] %>" class="default-img" alt="Item">
+                                                </a>
+                                            </div>
+                                            <div class="product-action-1">
+                                                <a aria-label="Quick view" class="action-btn hover-up" data-bs-toggle="modal" data-bs-target="#quickViewModal">
+                                                    <i class="fi-rs-search"></i></a>
+                                                <form action="/wishlist" method="post" class="wishlist-form" data-product-id="<%= product._id %>">
+                                                    <a aria-label="Add To Wishlist" class="action-btn hover-up wishlist-link" href="#"><i class="fi-rs-heart"></i></a>
+                                                </form>
+                                                <a aria-label="Compare" class="action-btn hover-up" href="shop-compare.html"><i class="fi-rs-shuffle"></i></a>
+                                            </div>
+                                            <div class="product-badges product-badges-position product-badges-mrg">
+                                                <span class="hot">Hot</span>
+                                            </div>
                                         </div>
-                                        <div class="product-action-1">
-                                            <a aria-label="Quick view" class="action-btn hover-up" data-bs-toggle="modal" data-bs-target="#quickViewModal">
-<i class="fi-rs-search"></i></a>
-                                            <a aria-label="Add To Wishlist" class="action-btn hover-up" href="shop-wishlist.html"><i class="fi-rs-heart"></i></a>
-                                            <a aria-label="Compare" class="action-btn hover-up" href="shop-compare.html"><i class="fi-rs-shuffle"></i></a>
-                                        </div>
-                                        <div class="product-badges product-badges-position product-badges-mrg">
-                                            <span class="hot">Hot</span>
-                                        </div>
-                                    </div>
-                                    <div class="product-content-wrap">
-                                        <div class="product-category">
-                                            <!-- <a href="shop-grid-right.html">Music</a> -->
-                                        </div>
-                                        <!-- <h2><a href="shop-product-right.html">Colorful Pattern Shirts</a></h2> -->
-                                          <h2><a href=""><%=product.name%></a></h2> 
-                                        <div class="rating-result" title="80%">
-                                            <span>
-                                                <span>80%</span>
-                                            </span>
-                                        </div>
-                                        <div class="product-price">
-                                            <span>₹<%=product.price%> </span>
-                                            <!-- <span>₹<%=product.price+50%> </span> -->
-                                            <span class="old-price">₹<%=product.price+50%></span>
-                                        </div>
-                                        <div class="product-action-1 show">
-                                            <a aria-label="Add To Cart" class="action-btn hover-up" href="shop-cart.html"><i class="fi-rs-shopping-bag-add"></i></a>
-                                        </div>
+                                        <div class="product-content-wrap">
+                                            <div class="product-category">
+                                            </div>
+                                            <h2><a href="/productDetails?productId=<%= product._id %>"><%= product.name %></a></h2>
+                                            <div class="rating-result" title="80%">
+                                                <span>
+                                                    <span>80%</span>
+                                                </span>
+                                            </div>
+                                            <div class="product-price">
+                                                <span>₹<%= product.discountedPrice %></span>
+                                                <% if (product.discountedPrice < product.price) { %>
+                                                <span class="old-price">₹<%= product.price %></span>
+                                                <% } %>
+                                            </div>
+                                            <!-- <div class="product-action-1 show">
+                                                <a aria-label="Add To Cart" class="action-btn hover-up" href="/cart"><i class="fi-rs-shopping-bag-add"></i></a>
+                                            </div> -->
+                                            <div class="product-action-1 show">
+                                                <form action="/cart?productId=<%= product._id %>" method="post" >
+                                                    <input type="hidden" name="quantity" value="1">
+                                                    <input type="hidden" name="size" value="XL"> <!-- Assuming default size as M -->
+                                                    <button type="submit">
+                                                        <a aria-label="Add To Cart" class="action-btn hover-up "><i class="fi-rs-shopping-bag-add"></i></a>
+                                                    </button>
+                                                </form>
+                                            </div>
+                                           </div>
                                     </div>
                                 </div>
-                            </div>
-                            <%})%>
-                            </div>
+                                <% } %>
+                            <% }) %>
+                        </div>
+                        
                             
                        
                                   <!--pagination-->
@@ -930,7 +1060,7 @@
                                         <nav aria-label="Page navigation example">
                                             <ul class="pagination justify-content-start">
                                                 <%for(let i=1;i<=totalPages;i++){%>
-                                                 <li class="page-item <%= page == i ?'active':'' %>"><a class="page-link" href="/loadShop?page=<%=i%>"><%=i%></a></li>
+                                                 <li class="page-item <%= page == i ?'active':'' %>"><a class="page-link" href="/loadShop?sort=<%= sortBy %>&page=<%=i%>&category=<%= selectedCategory %>"><%=i%></a></li>
                                                  <%}%>
                                     
                                     
@@ -1060,7 +1190,7 @@
         </div>
     </footer>
     <!-- Preloader Start -->
-    <div id="preloader-active">
+    <!-- <div id="preloader-active">
         <div class="preloader d-flex align-items-center justify-content-center">
             <div class="preloader-inner position-relative">
                 <div class="text-center">
@@ -1073,7 +1203,7 @@
                 </div>
             </div>
         </div>
-    </div>
+    </div> -->
     <!-- Vendor JS-->
     <script src="/user/assets/js/vendor/modernizr-3.6.0.min.js"></script>
     <script src="/user/assets/js/vendor/jquery-3.6.0.min.js"></script>
@@ -1098,6 +1228,53 @@
     <!-- Template  JS -->
     <script src=".//user/assets/js/main.js?v=3.4"></script>
     <script src=".//user/assets/js/shop.js?v=3.4"></script>
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.2/dist/umd/popper.min.js"></script>
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+
+    <script>
+        function submitForm() {
+            document.getElementById('filterForm').submit();
+        }
+    
+        function setSort(sortValue) {
+            document.getElementById('sort').value = sortValue;
+            submitForm();
+        }
+        
+    </script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            document.querySelectorAll('.wishlist-link').forEach(function (wishlistLink) {
+                wishlistLink.addEventListener('click', function (event) {
+                    event.preventDefault();
+                    const form = this.closest('.wishlist-form');
+                    const productId = form.getAttribute('data-product-id');
+                    
+                    fetch('/wishlist', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json'
+                        },
+                        body: JSON.stringify({ productId: productId })
+                    })
+                    .then(response => response.json())
+                    .then(data => {
+                        if (data.success) {
+                            alert('Product added to wishlist');
+                            window.location.href = '/wishlist';
+                        } else {
+                            alert('Product already in wishlist');
+                        }
+                    })
+                    .catch(error => {
+                        console.error('Error:', error);
+                        alert('Failed to add product to wishlist');
+                    });
+                });
+            });
+        });
+    </script>
 </body>
 
 </html>
