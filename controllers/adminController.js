@@ -409,14 +409,13 @@ const loadEditCategory=async(req,res)=>{
 //   };
 const loadOrderList = async (req, res) => {
     try {
-      const page = parseInt(req.query.page) || 1;
-      const limit = parseInt(req.query.limit) || 3;
-      const startIndex = (page - 1) * limit;
+      // const page = parseInt(req.query.page) || 1;
+      // const limit = parseInt(req.query.limit) || 3;
+      // const startIndex = (page - 1) * limit;
   
       // Fetch orders with pagination and populate userId and products.productId
       const orderData = await Order.find()
-        .skip(startIndex)
-        .limit(limit)
+        
         .populate('userId')
         .populate('products.productId');
   
@@ -424,9 +423,7 @@ const loadOrderList = async (req, res) => {
   
       res.render("orderlistadmin", {
         orderData: orderData,
-        currentPage: page,
-        totalPages: Math.ceil(totalOrders / limit),
-        limit: limit
+       
       });
   
     } catch (error) {
@@ -594,38 +591,41 @@ const blockandUnblockCoupon=async(req,res)=>{
         console.log("error from coupon Controller blockandUnblockCoupon",error);
     }
 }
-const loadOrderDetials= async (req, res) => {
-    try {
-      const orderId = req.query.id;
-      console.log("orderId", orderId);
-  
-      const orderData = await Order.find().populate('products.productId');
-      if (!orderData || orderData.length === 0) {
-        console.log("No orders found");
-        return res.status(404).send("No orders found");
-      }
-  
-      const address = orderData[0].address;
-      const orderDetails = orderData.flatMap(order => order.products)
-                                      .find(pro => pro._id.toString() === orderId);
-  
-      if (orderDetails) {
-        console.log("Found order details");
-        res.render('orderDetail', {
-          order: orderDetails,
-          userOrder: address,
-          orderIdd: orderData[0]._id,
-        });
-      } else {
-        console.log("Order details not found");
-        res.status(404).send("Order details not found");
-      }
-    } catch (error) {
-      console.log("Error from admin controller loadOrderDetails", error);
-      res.status(500).send("Internal Server Error");
+const loadOrderDetials = async (req, res) => {
+  try {
+    const orderId = req.query.id;
+    console.log("orderId", orderId);
+
+    const orderData = await Order.findOne({ "products._id": orderId })
+      .populate('products.productId')
+      .populate('userId')
+      .populate('products.coupon'); // Populate coupon details
+
+    if (!orderData) {
+      console.log("No orders found");
+      return res.status(404).send("No orders found");
     }
-  };
-  const orderDetailsUpdateStatus = async (req, res) => {
+
+    const address = orderData.address[0]; // Assuming you want the first address
+    const orderDetails = orderData.products.find(pro => pro._id.toString() === orderId);
+
+    if (orderDetails) {
+      console.log("Found order details");
+      res.render('orderDetail', {
+        order: orderDetails,
+        userOrder: address,
+        orderIdd: orderData._id,
+      });
+    } else {
+      console.log("Order details not found");
+      res.status(404).send("Order details not found");
+    }
+  } catch (error) {
+    console.log("Error from admin controller loadOrderDetails", error);
+    res.status(500).send("Internal Server Error");
+  }
+};  
+const orderDetailsUpdateStatus = async (req, res) => {
     try {
       console.log("orderDetailsUpdateStatus");
       const { orderId } = req.params;
@@ -1010,6 +1010,7 @@ const getDashboard = async (req, res) => {
       {
         $group: {
           _id: "$_id",
+          orderId: { $first: "$orderId" },
           userId: { $first: "$userId" },
           products: { $push: "$products" },
           totalPrice: { $first: "$totalPrice" },
@@ -1043,9 +1044,9 @@ const getDashboard = async (req, res) => {
         pasttotalRevenue,
         uniqueProductCount,
         message: 'No orders found for the selected date range',
-        currentPage: page,
-        totalPages: totalPages,
-        limit: limit
+        // currentPage: page,
+        // totalPages: totalPages,
+        // limit: limit
       });
     } else {
       const categoryOrders = await Order.aggregate([
@@ -1080,9 +1081,9 @@ const getDashboard = async (req, res) => {
         pasttotalRevenue,
         uniqueProductCount,
         categoryOrders,
-        currentPage: page,
-        totalPages: totalPages,
-        limit: limit
+        // currentPage: page,
+        // totalPages: totalPages,
+        // limit: limit
       });
     }
   } catch (error) {
@@ -1093,6 +1094,211 @@ const getDashboard = async (req, res) => {
    
   const PDFDocument = require('pdfkit');
   
+// const pdfDownlodedOrders = async (req, res) => {
+//   try {
+//       const { startDate, endDate, predefinedRange } = req.query;
+//       console.log("Received query parameters:", req.query);
+
+//       let dateFilter = {};
+
+//       const calculatePredefinedRange = (range) => {
+//           console.log("Calculating predefined range for:", range);
+//           const now = new Date();
+//           let start = new Date();
+
+//           switch (range) {
+//               case 'oneDay':
+//                   start = new Date(now.setDate(now.getDate() - 1));
+//                   break;
+//               case 'oneWeek':
+//                   start = new Date(now.setDate(now.getDate() - 7));
+//                   break;
+//               case 'oneMonth':
+//                   start = new Date(now.setMonth(now.getMonth() - 1));
+//                   break;
+//               case 'oneYear':
+//                   start = new Date(now.setFullYear(now.getFullYear() - 1));
+//                   break;
+//               default:
+//                   console.log("Invalid predefined range:", range);
+//                   return null;
+//           }
+
+//           start.setHours(0, 0, 0, 0);
+//           const end = new Date();
+//           end.setHours(23, 59, 59, 999);
+
+//           console.log(`Range: ${range}, Start: ${start}, End: ${end}`);
+//           return { start, end };
+//       };
+
+//       if (predefinedRange) {
+//           console.log("Predefined range provided:", predefinedRange);
+//           const range = calculatePredefinedRange(predefinedRange);
+//           if (range) {
+//               dateFilter = {
+//                   'products.date': {
+//                       $gte: range.start,
+//                       $lte: range.end
+//                   }
+//               };
+//           }
+//       } else if (startDate && endDate) {
+//           dateFilter = {
+//               'products.date': {
+//                   $gte: new Date(startDate),
+//                   $lte: new Date(new Date(endDate).setHours(23, 59, 59, 999))
+//               }
+//           };
+//       } else if (startDate) {
+//           dateFilter = {
+//               'products.date': {
+//                   $gte: new Date(startDate),
+//                   $lt: new Date(new Date(startDate).setDate(new Date(startDate).getDate() + 1))
+//               }
+//           };
+//       }
+
+//       console.log("Date Filter:", dateFilter);
+
+//       const orders = await Order.aggregate([
+//           { $unwind: "$products" },
+//           { $match: dateFilter },
+//           {
+//               $lookup: {
+//                   from: 'products',
+//                   localField: 'products.productId',
+//                   foreignField: '_id',
+//                   as: 'productDetails'
+//               }
+//           },
+//           { $unwind: "$productDetails" },
+//           {
+//               $addFields: {
+//                   "products.formattedDate": {
+//                       $function: {
+//                           body: `function(date) { 
+//                               const options = { weekday: 'short', year: '2-digit', month: 'short', day: 'numeric' }; 
+//                               return new Date(date).toLocaleDateString('en-US', options); 
+//                           }`,
+//                           args: ["$products.date"],
+//                           lang: "js"
+//                       }
+//                   }
+//               }
+//           },
+//           {
+//               $group: {
+//                   _id: "$_id",
+//                   userId: { $first: "$userId" },
+//                   products: {
+//                       $push: {
+//                           productName: "$productDetails.name",
+//                           productPrice: "$products.productPrice",
+//                           promo_price: "$productDetails.promo_Price",
+//                           quantity: "$products.quantity",
+//                           product_orderStatus: "$products.product_orderStatus",
+//                           payment_status: "$products.payment_status",
+//                           payment_method: "$products.payment_method.method",
+//                           date: "$products.formattedDate"
+//                       }
+//                   },
+//                   totalPrice: { $first: "$totalPrice" },
+//                   address: { $first: "$address" },
+//                   Wallet: { $first: "$Wallet" },
+//                   createdAt: { $first: "$createdAt" },
+//                   updatedAt: { $first: "$updatedAt" }
+//               }
+//           },
+//           {
+//               $lookup: {
+//                   from: 'users',
+//                   localField: 'userId',
+//                   foreignField: '_id',
+//                   as: 'userDetails'
+//               }
+//           },
+//           { $unwind: "$userDetails" }
+//       ]);
+
+//       if (!orders || orders.length === 0) {
+//           return res.status(404).send('No orders found for the selected date range');
+//       }
+
+//       const doc = new PDFDocument({ margin: 30, size: 'A4' });
+//       let filename = `orders_report_${new Date().toISOString()}.pdf`;
+//       filename = encodeURIComponent(filename);
+
+//       res.setHeader('Content-disposition', 'attachment; filename="' + filename + '"');
+//       res.setHeader('Content-type', 'application/pdf');
+
+//       doc.on('data', (chunk) => res.write(chunk));
+//       doc.on('end', () => res.end());
+
+//       // Header
+//       doc.fontSize(20).text('Order Report', { align: 'center' }).moveDown(2);
+
+//       // Table header
+//       doc.fontSize(10).font('Helvetica-Bold').fill('#333');
+//       const headers = ['Date', 'User', 'Product Name', 'Product Price', 'Discount', 'Quantity', 'Total', 'Status'];
+//       const headerXPositions = [10, 60, 160, 290, 350, 410, 460, 510];
+//       const headerYPosition = 150;
+//       const rowHeight = 20;
+
+//       // Draw table header borders
+//       headers.forEach((header, i) => {
+//           doc.text(header, headerXPositions[i], headerYPosition, { width: 50, align: 'center' });
+//       });
+//       doc.moveTo(10, headerYPosition + rowHeight).lineTo(570, headerYPosition + rowHeight).stroke();
+//       doc.moveTo(10, headerYPosition - 10).lineTo(570, headerYPosition - 10).stroke();
+
+//       // Draw vertical lines for header columns
+//       headerXPositions.forEach((xPos) => {
+//           doc.moveTo(xPos, headerYPosition - 10).lineTo(xPos, headerYPosition + rowHeight).stroke();
+//       });
+//       doc.moveTo(570, headerYPosition - 10).lineTo(570, headerYPosition + rowHeight).stroke();
+
+//       let y = headerYPosition + rowHeight + 0;
+
+//       orders.forEach(order => {
+//           order.products.forEach(product => {
+//               const productTotal = parseFloat(product.promo_price * product.quantity);
+//               const discount = parseFloat(product.productPrice - productTotal);
+//               const total = product.promo_price * product.quantity;
+
+//               if (!product.productName || !product.promo_price || !product.quantity) return;
+
+//               doc.moveTo(10, y).lineTo(570, y).stroke();
+//               doc.moveTo(10, y + rowHeight).lineTo(570, y + rowHeight).stroke();
+//               headerXPositions.forEach((xPos) => {
+//                   doc.moveTo(xPos, y).lineTo(xPos, y + rowHeight).stroke();
+//               });
+//               doc.moveTo(570, y).lineTo(570, y + rowHeight).stroke();
+
+//               doc.fontSize(8).font('Helvetica').fill('#555');
+//               doc.text(product.date, 10, y, { width: 50, align: 'center' });
+//               doc.text(order.userDetails.username, 60, y + 10, { width: 100, align: 'center' });
+//               doc.text(product.productName, 160, y + 10, { width: 130, align: 'left' });
+//               doc.text(product.promo_price.toFixed(0), 290, y + 10, { width: 60, align: 'center' });
+//               doc.text(discount.toFixed(2), 350, y + 10, { width: 60, align: 'center' });
+//               doc.text(product.quantity, 410, y + 10, { width: 50, align: 'center' });
+//               doc.text(total.toFixed(2), 460, y + 10, { width: 50, align: 'center' });
+//               doc.text(product.product_orderStatus, 510, y + 10, { width: 50, align: 'center' });
+
+//               y += rowHeight;
+//           });
+//       });
+
+//       doc.end();
+//   } catch (error) {
+//       console.error('Error generating PDF:', error);
+//       res.status(500).send('Error generating PDF');
+//   }
+// };
+//const PDFDocument = require('pdfkit');
+const mongoose = require('mongoose');
+//const PDFDocument = require('pdfkit');
+
 const pdfDownlodedOrders = async (req, res) => {
   try {
       const { startDate, endDate, predefinedRange } = req.query;
@@ -1190,6 +1396,12 @@ const pdfDownlodedOrders = async (req, res) => {
               $group: {
                   _id: "$_id",
                   userId: { $first: "$userId" },
+                  orderId: { $first: "$orderId" },
+                  address: { $first: "$address" },
+                  totalPrice: { $first: "$totalPrice" },
+                  Wallet: { $first: "$Wallet" },
+                  createdAt: { $first: "$createdAt" },
+                  updatedAt: { $first: "$updatedAt" },
                   products: {
                       $push: {
                           productName: "$productDetails.name",
@@ -1201,12 +1413,7 @@ const pdfDownlodedOrders = async (req, res) => {
                           payment_method: "$products.payment_method.method",
                           date: "$products.formattedDate"
                       }
-                  },
-                  totalPrice: { $first: "$totalPrice" },
-                  address: { $first: "$address" },
-                  Wallet: { $first: "$Wallet" },
-                  createdAt: { $first: "$createdAt" },
-                  updatedAt: { $first: "$updatedAt" }
+                  }
               }
           },
           {
@@ -1224,6 +1431,22 @@ const pdfDownlodedOrders = async (req, res) => {
           return res.status(404).send('No orders found for the selected date range');
       }
 
+      // Calculate overall discount, overall sales, and total order amount
+      let overallDiscount = 0;
+      let overallSales = 0;
+      let totalOrderAmount = 0;
+
+      orders.forEach(order => {
+          order.products.forEach(product => {
+              const discount = (product.productPrice - product.promo_price) * product.quantity;
+              const sales = product.promo_price * product.quantity;
+
+              overallDiscount += discount;
+              overallSales += sales;
+          });
+          totalOrderAmount += order.totalPrice;
+      });
+
       const doc = new PDFDocument({ margin: 30, size: 'A4' });
       let filename = `orders_report_${new Date().toISOString()}.pdf`;
       filename = encodeURIComponent(filename);
@@ -1234,55 +1457,62 @@ const pdfDownlodedOrders = async (req, res) => {
       doc.on('data', (chunk) => res.write(chunk));
       doc.on('end', () => res.end());
 
-      // Header
-      doc.fontSize(20).text('Order Report', { align: 'center' }).moveDown(2);
-
-      // Table header
-      doc.fontSize(10).font('Helvetica-Bold').fill('#333');
-      const headers = ['Date', 'User', 'Product Name', 'Product Price', 'Discount', 'Quantity', 'Total', 'Status'];
+      const headers = ['Date', 'User', 'Product Name', 'Product Price', 'Quantity', 'Total', 'Status', 'Payment Mode'];
       const headerXPositions = [10, 60, 160, 290, 350, 410, 460, 510];
       const headerYPosition = 150;
       const rowHeight = 20;
 
-      // Draw table header borders
-      headers.forEach((header, i) => {
-          doc.text(header, headerXPositions[i], headerYPosition, { width: 50, align: 'center' });
-      });
-      doc.moveTo(10, headerYPosition + rowHeight).lineTo(570, headerYPosition + rowHeight).stroke();
-      doc.moveTo(10, headerYPosition - 10).lineTo(570, headerYPosition - 10).stroke();
+      // Function to add table header
+      const addTableHeader = () => {
+          doc.fontSize(10).font('Helvetica-Bold').fill('#333');
+          headers.forEach((header, i) => {
+              doc.text(header, headerXPositions[i], y, { width: 50, align: 'center' });
+          });
+          y += rowHeight + 10;
+      };
 
-      // Draw vertical lines for header columns
-      headerXPositions.forEach((xPos) => {
-          doc.moveTo(xPos, headerYPosition - 10).lineTo(xPos, headerYPosition + rowHeight).stroke();
-      });
-      doc.moveTo(570, headerYPosition - 10).lineTo(570, headerYPosition + rowHeight).stroke();
+      // Header
+      doc.fontSize(20).text('Order Report', { align: 'center' }).moveDown(2);
 
-      let y = headerYPosition + rowHeight + 0;
+      let y = doc.y;
+
+      // Add overall summary at the top of the report
+      doc.fontSize(12).text(`Overall Discount: ${overallDiscount.toFixed(2)}`, 10, y);
+      y += 20; // Add space between the lines
+      doc.fontSize(12).text(`Overall Sales: ${overallSales.toFixed(2)}`, 10, y);
+      y += 20; // Add space between the lines
+      doc.fontSize(12).text(`Total Order Amount: ${totalOrderAmount.toFixed(2)}`, 10, y);
+      y += 30; // Add more space before the table starts
+
+      // Add table header initially
+      addTableHeader();
+
+      const pageHeight = 841.89; // A4 page height in points
+      const bottomMargin = 50;
 
       orders.forEach(order => {
           order.products.forEach(product => {
               const productTotal = parseFloat(product.promo_price * product.quantity);
-              const discount = parseFloat(product.productPrice - productTotal);
               const total = product.promo_price * product.quantity;
 
               if (!product.productName || !product.promo_price || !product.quantity) return;
 
-              doc.moveTo(10, y).lineTo(570, y).stroke();
-              doc.moveTo(10, y + rowHeight).lineTo(570, y + rowHeight).stroke();
-              headerXPositions.forEach((xPos) => {
-                  doc.moveTo(xPos, y).lineTo(xPos, y + rowHeight).stroke();
-              });
-              doc.moveTo(570, y).lineTo(570, y + rowHeight).stroke();
+              // Check if the next row will overflow the page
+              if (y + rowHeight > pageHeight - bottomMargin) {
+                  doc.addPage();
+                  y = 0; // Reset y to the top of the new page
+                  addTableHeader();
+              }
 
               doc.fontSize(8).font('Helvetica').fill('#555');
               doc.text(product.date, 10, y, { width: 50, align: 'center' });
-              doc.text(order.userDetails.username, 60, y + 10, { width: 100, align: 'center' });
-              doc.text(product.productName, 160, y + 10, { width: 130, align: 'left' });
-              doc.text(product.promo_price.toFixed(0), 290, y + 10, { width: 60, align: 'center' });
-              doc.text(discount.toFixed(2), 350, y + 10, { width: 60, align: 'center' });
-              doc.text(product.quantity, 410, y + 10, { width: 50, align: 'center' });
-              doc.text(total.toFixed(2), 460, y + 10, { width: 50, align: 'center' });
-              doc.text(product.product_orderStatus, 510, y + 10, { width: 50, align: 'center' });
+              doc.text(order.userDetails.username, 60, y, { width: 100, align: 'center' });
+              doc.text(product.productName, 160, y, { width: 130, align: 'left' });
+              doc.text(product.promo_price.toFixed(2), 290, y, { width: 60, align: 'center' });
+              doc.text(product.quantity, 350, y, { width: 50, align: 'center' });
+              doc.text(total.toFixed(2), 410, y, { width: 50, align: 'center' });
+              doc.text(product.product_orderStatus, 460, y, { width: 50, align: 'center' });
+              doc.text(product.payment_method, 510, y, { width: 50, align: 'center' });
 
               y += rowHeight;
           });
@@ -1294,6 +1524,8 @@ const pdfDownlodedOrders = async (req, res) => {
       res.status(500).send('Error generating PDF');
   }
 };
+
+
 const getStartDate=require('../helpers/chartFilter')
 const getOrdersGraphData = async (req, res) => {
   try {
@@ -1497,6 +1729,7 @@ module.exports={
     statusChange,
     getDashboard,
     pdfDownlodedOrders,
+    //pdfDownloadedOrders ,
     loadStatics,
     getOrdersGraphData
 

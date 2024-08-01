@@ -4,7 +4,7 @@ const orderSchema = new mongoose.Schema({
   orderId: {
     type: String,
     default: () => Math.floor(100000 + Math.random() * 900000).toString(),
-    // unique: true,  
+     unique: true,  
   },
   userId: {
     type: mongoose.Schema.Types.ObjectId,
@@ -62,7 +62,8 @@ const orderSchema = new mongoose.Schema({
     },
     cartId: {
       type: mongoose.Schema.Types.ObjectId,
-      ref: 'cart',
+      ref: 'cart'
+      //required: true,
     },
     delivery: {
       type: Number,

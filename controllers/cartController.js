@@ -48,9 +48,9 @@ const loadShopCart = async (req, res) => {
             let msg = '';
 
             userData.products.forEach(pro => {
-                if (pro.productId.isDelete) {
+                if (pro.productId && pro.productId.isDelete) {
                     msg = 'Some products in your cart are no longer available.';
-                } else {
+                } else if (pro.productId) {
                     subtotal = pro.quantity * pro.productId.promo_Price;
                     totalprice += subtotal;
                     console.log(`Subtotal for product ${pro.productId.name}:`, subtotal);
@@ -67,7 +67,8 @@ const loadShopCart = async (req, res) => {
         console.error("Error loading cart:", error);
         res.status(500).send("Internal Server Error");
     }
-}
+};
+
 
 
 const AddtoCart = async (req, res) => {

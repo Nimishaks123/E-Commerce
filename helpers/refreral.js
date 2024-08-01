@@ -1,23 +1,6 @@
-
-
-
-
-const generateOtp = require('generate-otp');
 const nodemailer = require('nodemailer');
-require('dotenv').config();
 
-// const generate = () => {
-//     const otp = generateOtp.generate(4, {
-//         length: 4,
-//         digits: true,
-//         uppercase: false,
-//         alphabets: false,
-//         specialChars: false,
-//     });
-//     return otp;
-// }
-
-const sendreferal = (email,referal) => {
+const sendreferal = (email, referralCode) => {
     return new Promise((resolve, reject) => {
         const transporter = nodemailer.createTransport({
             service: 'gmail',
@@ -33,8 +16,26 @@ const sendreferal = (email,referal) => {
         const mailOptions = {
             from: process.env.EMAIL,
             to: email,
-            subject: 'Refreral',
-            text: ` hai ${email} this is your ${referal}GEt 100 Rs`,
+            subject: 'Referral',
+            text: `Hi there,
+      
+      Your referral code is: ${referralCode}
+      
+      Use this code to refer your friends and earn rewards!
+      
+      Thanks,
+      The [Your Company Name] Team`,
+            html: `<!DOCTYPE html>
+      <html>
+      <body>
+        <p>Hi there,</p>
+        <p>Use this referral code and earn rewards!: <b>${referralCode}</b></p>
+        <p>And you can earn more by referring your friends too.. </p>
+        <p>Thanks,</p>
+        <p>The Shopiz Team</p>
+      </body>
+      </html>
+      `
         };
 
         transporter.sendMail(mailOptions, (err, info) => {
@@ -42,7 +43,7 @@ const sendreferal = (email,referal) => {
                 console.error("Error from Nodemailer:", err);
                 reject(err);
             } else {
-                console.log('Email referal  sent:', info.response);
+                console.log('Email referral sent:', info.response);
                 resolve(info);
             }
         });
@@ -50,9 +51,7 @@ const sendreferal = (email,referal) => {
 }
 
 module.exports = {
-    // generate,
     sendreferal
 };
-
     
 

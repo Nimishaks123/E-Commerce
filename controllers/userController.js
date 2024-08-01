@@ -12,6 +12,8 @@ const Transaction=require('../models/transactionModel')
 const Offer=require('../models/offerModel')
 const { v4: uuidv4 } = require('uuid');
 const nodemailer = require('nodemailer')
+const mongoose = require('mongoose');
+
 
 require('dotenv').config()
 
@@ -479,7 +481,7 @@ const loadShop = async (req, res) => {
         console.log("sortCriteria --" + sortCriteria);
 
         const searchQuery = req.query.search || '';
-        let filter = {isDelete:false};
+        let filter = { isDelete: false };
         if (searchQuery) {
             filter.name = { $regex: searchQuery, $options: 'i' };
         }
@@ -518,12 +520,22 @@ const loadShop = async (req, res) => {
             let categoryOffer = await Offer.findOne({ category: product.category, isActive: true });
             let productOffer = await Offer.findOne({ product: product._id, isActive: true });
 
+            let productDiscountedPrice = product.promo_Price;
+            let categoryDiscountedPrice = product.promo_Price;
+
             if (productOffer) {
-                product.discountedPrice = product.promo_Price - (product.promo_Price * productOffer.Discount / 100);
-            } else if (categoryOffer) {
-                product.discountedPrice = product.promo_Price - (product.promo_Price * categoryOffer.Discount / 100);
+                productDiscountedPrice = product.promo_Price - (product.promo_Price * productOffer.Discount / 100);
+            }
+
+            if (categoryOffer) {
+                categoryDiscountedPrice = product.promo_Price - (product.promo_Price * categoryOffer.Discount / 100);
+            }
+
+            // Check if any offer is applied
+            if (productOffer || categoryOffer) {
+                product.discountedPrice = Math.min(productDiscountedPrice, categoryDiscountedPrice);
             } else {
-                product.discountedPrice = product.promo_Price;
+                product.discountedPrice = product.promo_Price; // No offer, show promo price
             }
         }
 
@@ -543,9 +555,7 @@ const loadShop = async (req, res) => {
     } catch (error) {
         console.log('error from loadShop ', error);
     }
-}
-
-
+};
 
 
 
@@ -595,11 +605,63 @@ const loadProfile = async (req, res) => {
         const userId = req.session.user._id;
         const userAddress = await Address.find({ userId: userId });
         const userData = await User.findById(userId);
-        const orderData = await Order.find({ userId: userId }).populate({ path: 'products.productId' });
-
-        if (!userData) {
+        // const orderData = await Order.find({ userId: userId }).populate({ path: 'products.productId' }).sort({'products[0].date':-1});
+        // =======================
+        const orderData = await Order.aggregate([
+            { $match: { userId:new mongoose.Types.ObjectId(userId.toString()) } },
+            { $unwind: "$products" },
+            {
+                $lookup: {
+                    from: "products",
+                    localField: "products.productId",
+                    foreignField: "_id",
+                    as: "productDetails"
+                }
+            },
+            { $unwind: "$productDetails" },
+            { $sort: { "products.date": -1 } },
+            {
+                $group: {
+                    _id: "$_id",
+                    userId: { $first: "$userId" },
+                    orderId: { $first: "$orderId" },
+                    address: { $first: "$address" },
+                    totalPrice: { $first: "$totalPrice" },
+                    Wallet: { $first: "$Wallet" },
+                    createdAt: { $first: "$createdAt" },
+                    updatedAt: { $first: "$updatedAt" },
+                    products: { $push: { 
+                        productId: "$products.productId", 
+                        size: "$products.size", 
+                        quantity: "$products.quantity", 
+                        productPrice: "$products.productPrice", 
+                        product_orderStatus: "$products.product_orderStatus",
+                        payment_method: "$products.payment_method", 
+                        payment_status: "$products.payment_status", 
+                        message: "$products.message", 
+                        date: "$products.date", 
+                        coupon: "$products.coupon", 
+                        delivery: "$products.delivery", 
+                        _id: "$products._id", 
+                        productDetails: "$productDetails" ,
+                        cartId: "$products.cartId"
+                    }}
+                }
+            },
+            {
+                $sort: { "products.date": -1 }
+            }
+        ]);
+        console.log(orderData,'orderdata');
+        // =======================
+        if (!userData) { 
             return res.status(404).render('error', { msg: "User not found" });
         }
+        // orderData.sort((a, b) => {
+        //     const latestProductDateA = Math.max(...a.products.map(product => new Date(product.date).getTime()));
+        //     const latestProductDateB = Math.max(...b.products.map(product => new Date(product.date).getTime()));
+        //     return latestProductDateB - latestProductDateA;
+        // });
 
         // Calculate total wallet balance
         let totalWalletBalance = 0;
@@ -619,7 +681,7 @@ const loadProfile = async (req, res) => {
             totalWalletBalance: totalWalletBalance.toFixed(1),
             msg: "",
             name: userData.username
-        });
+        })
 
     } catch (error) {
         console.error("Error in loadProfile:", error);
@@ -668,41 +730,33 @@ const addchangepassword = async (req, res) => {
     try {
         const userId = req.session.user._id;
         const { currentPassword, newPassword, confirmNewPassword } = req.body;
-        console.log('currentPassword',currentPassword);
-        console.log('new password',newPassword);
-        console.log('confirmpassword',confirmNewPassword);
 
         if (newPassword !== confirmNewPassword) {
-            return res.render('changePassword', { msg: 'New passwords do not match' });
+            return res.status(400).json({ msg: 'New passwords do not match' });
         }
 
         const user = await User.findById(userId);
 
         if (!user) {
-            return res.render('changePassword', { msg: 'User not found' });
+            return res.status(404).json({ msg: 'User not found' });
         }
 
         const isMatch = await pass.checkPassword(currentPassword, user.password);
-        //const sPassword=await pass.checkPassword(password,UserData.password)
         if (!isMatch) {
-            return res.render('changePassword', { msg: 'Current password is incorrect' });
+            return res.status(400).json({ msg: 'Current password is incorrect' });
         }
-       // const spassword = await pass.securePassword(userData.password)
-       const hashedPassword=await pass.securePassword(newPassword)
 
-        //const salt = await bcrypt.genSalt(10);
-        //const hashedPassword = await bcrypt.hash(newPassword, salt);
-
+        const hashedPassword = await pass.securePassword(newPassword);
         user.password = hashedPassword;
         await user.save();
 
-        res.render('changePassword', { successmsg: 'Password changed successfully' });
-
+        res.json({ msg: 'Password changed successfully' });
     } catch (error) {
         console.error('Error in change password:', error);
-        res.status(500).render('changePassword', {errormsg: 'Internal server error' });
+        res.status(500).json({ msg: 'Internal server error' });
     }
-}
+};
+
 // const cancelOrder = async (req, res) => {
 //     try {
 //         console.log("Order data remaining");
@@ -1578,6 +1632,84 @@ const payment_failure=async(req,res)=>{
         console.log("error from orderController payment_failure",error);
     }
 }
+// const referral = async (req, res) => {
+//     try {
+//         const user = await User.findById(req.session.user._id);
+
+//         if (!user) {
+//             return res.status(400).json({ success: false, message: 'User not found' });
+//         }
+
+//         if (!user.referedBy) {
+//             const referalCode = req.body.referalCode;
+//             console.log(req.body, referalCode);
+//             const referedBy = await User.findOne({ referralCode: referalCode });
+
+//             if (!referedBy) {
+//                 return res.status(400).json({ success: false, message: 'Invalid referral code' });
+//             }
+
+//             console.log(referedBy, "referred user");
+//             console.log(referedBy._id.toString(), req.session.user._id.toString(), "referred ids");
+
+//             if (referedBy._id.toString() === req.session.user._id.toString()) {
+//                 console.log("User tried to refer themselves");
+//                 return res.status(400).json({ success: false, message: 'You cannot refer yourself' });
+//             } else {
+//                 user.referedBy = referedBy.name;
+//                 await user.save();
+
+//                 const name = referedBy.name;
+//                 console.log("referred user", name);
+
+//                 const orderData = await Order.findOne({ username: name });
+
+//                 if (!orderData) {
+//                     return res.status(400).json({ success: false, message: 'Order data not found for referred user' });
+//                 }
+
+//                 orderData.Wallet += 100;
+//                 const save = await orderData.save();
+
+//                 if (save) {
+//                     return res.status(200).json({ success: true });
+//                 } else {
+//                     return res.status(500).json({ success: false, message: 'Failed to update wallet' });
+//                 }
+//             }
+//         } else {
+//             return res.status(400).json({ message: "You have already been referred" });
+//         }
+//     } catch (error) {
+//         console.log("Error from user controller referral:", error);
+//         res.status(500).json({ success: false, message: 'Internal Server Error' });
+//     }
+// };
+
+
+
+
+
+const refereal=require('../helpers/refreral')
+
+// const refer = async(req,res) => {
+//    try {
+//     const email = req.body.email
+//             const user = await User.findById(req.session.user._id)
+//             const referralCode = user.referralCode
+//             console.log("email= = = ",email,"referalcode=====",referralCode);
+            
+//             const sendMail=await refereal.sendreferal(email,referralCode)
+
+      
+
+                 
+        
+//     } 
+//     catch (error) {
+//         console.log("error from user controller refer",error);
+//     }
+// }
 const referral = async (req, res) => {
     try {
         const user = await User.findById(req.session.user._id);
@@ -1602,15 +1734,14 @@ const referral = async (req, res) => {
                 console.log("User tried to refer themselves");
                 return res.status(400).json({ success: false, message: 'You cannot refer yourself' });
             } else {
-                user.referedBy = referedBy.name;
+                user.referedBy = referedBy.username; // Updated to store username instead of name
                 await user.save();
 
-                const name = referedBy.name;
-                console.log("referred user", name);
-
-                const orderData = await Order.findOne({ username: name });
+                console.log(`Querying order data for referred user ID: ${referedBy._id}`);
+                const orderData = await Order.findOne({ userId: referedBy._id });
 
                 if (!orderData) {
+                    console.log(`No order data found for referred user ID: ${referedBy._id}`);
                     return res.status(400).json({ success: false, message: 'Order data not found for referred user' });
                 }
 
@@ -1632,30 +1763,28 @@ const referral = async (req, res) => {
     }
 };
 
+const refer = async (req, res) => {
+    try {
+        const email = req.body.email;
+        const user = await User.findById(req.session.user._id);
+        const referralCode = user.referralCode;
 
+        console.log("email= = = ", email, "referalcode=====", referralCode);
 
+        const sendMail = await refereal.sendreferal(email, referralCode);
 
-
-const refereal=require('../helpers/refreral')
-
-const refer = async(req,res) => {
-   try {
-    const email = req.body.email
-            const user = await User.findById(req.session.user._id)
-            const referralCode = user.referralCode
-            console.log("email= = = ",email,"referalcode=====",referralCode);
-            
-            const sendMail=await refereal.sendreferal(email,referralCode)
-
-      
-
-                 
-        
-    } 
-    catch (error) {
-        console.log("error from user controller refer",error);
+        if (sendMail) {
+            return res.status(200).json({ success: true });
+        } else {
+            return res.status(500).json({ success: false, message: 'Failed to send referral email' });
+        }
+    } catch (error) {
+        console.log("error from user controller refer", error);
+        res.status(500).json({ success: false, message: 'Internal Server Error' });
     }
 }
+
+
 const deleteOrder = async(req,res)=>{
     try {
         const {orderId}=req.query
@@ -1692,6 +1821,52 @@ const deleteOrder = async(req,res)=>{
         console.log("error from orderController deleteOrder",error);
     }
 }
+const loadoderDetails = async (req, res) => {
+    try {
+        console.log("load order details");
+        const userId = req.session.user._id;
+        const orderId = req.query.id;
+        console.log("orderId ", orderId);
+
+        const orderData = await Order.findOne({ userId: userId, 'products._id': orderId })
+            .populate('products.productId')
+            .populate('products.coupon');
+
+        if (orderData) {
+            console.log("order data find", orderData);
+            const orderDetails = orderData.products.find(pro => pro._id.toString() === orderId);
+            if (orderDetails) {
+                console.log("find order details");
+
+                // Fetch coupon details if available
+                let couponDetails = null;
+                if (orderDetails.coupon) {
+                    couponDetails = await Coupon.findById(orderDetails.coupon);
+                    console.log("coupon", couponDetails);
+                }
+
+                // Render the order details page with the necessary data
+                res.render('orderDetails', {
+                    order: orderDetails,
+                    userOrder: { address: orderData.address },
+                    orderId: orderData.orderId,
+                    couponDetails,
+                    offerDetails: orderDetails.offer // Assuming you have offer details in orderDetails
+                });
+            } else {
+                console.log("orderDetails not found");
+                res.status(404).send("Order details not found");
+            }
+        } else {
+            console.log("orderData not found");
+            res.status(404).send("Order data not found");
+        }
+    } catch (error) {
+        console.log("error from userController loadOrderDetails", error);
+        res.status(500).send("Internal Server Error");
+    }
+};
+
 
 
 
@@ -1730,6 +1905,7 @@ module.exports = {
     payment_failure,
     refer,
     referral,
-    deleteOrder
+    deleteOrder,
+    loadoderDetails
 
 }

@@ -658,10 +658,10 @@
                       <tbody>
                         <% if (order && order.length > 0) { %>
                         <% order.forEach(order => { %>
-                        <% if (order.products && order.products.length > 0) { %>
+                        <!-- <% if (order.products && order.products.length > 0) { %> -->
                         <% order.products.forEach(odr => { %>
                         <tr>
-                          <td><a href="#"><%= order._id %></a></td>
+                          <td>#<%= order.orderId%></a></td>
                           <td><a href="#"><%= order.userDetails.username %></a></td>
                           <td><%= new Date(order.createdAt).toLocaleDateString() %></td>
                           <td>Rs<%= odr.productPrice * odr.quantity %></td>
@@ -672,7 +672,7 @@
                           </td> -->
                         </tr>
                         <% }); %>
-                        <% } %>
+                        <!-- <% } %> -->
                         <% }); %>
                         <% } else { %>
                         <tr>
@@ -700,25 +700,7 @@
                 </nav>
             </div> -->
                <!-- Pagination Controls -->
-               <nav>
-                <ul class="pagination">
-                  <% if (currentPage > 1) { %>
-                    <li class="page-item">
-                      <a class="page-link" href="?page=<%= currentPage - 1 %>&limit=<%= limit %>">Previous</a>
-                    </li>
-                  <% } %>
-                  <% for (let i = 1; i <= totalPages; i++) { %>
-                    <li class="page-item <%= currentPage === i ? 'active' : '' %>">
-                      <a class="page-link" href="?page=<%= i %>&limit=<%= limit %>"><%= i %></a>
-                    </li>
-                  <% } %>
-                  <% if (currentPage < totalPages) { %>
-                    <li class="page-item">
-                      <a class="page-link" href="?page=<%= currentPage + 1 %>&limit=<%= limit %>">Next</a>
-                    </li>
-                  <% } %>
-                </ul>
-              </nav>
+              
     </div>
         </section> 
 

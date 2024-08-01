@@ -345,80 +345,98 @@ th {
                             <div class="card-header">
                                 <!-- <a  > Back</a> -->
                                 <h5 class="mb-0">Your Orders</h5>
-                            </div>
-    
-                            <div class="card-body">
+                              </div>
+                              
+                              <div class="card-body">
                                 <div class="table-responsive">
-                                    <table class="table">
-                                        <thead>
+                                  <table class="table">
+                                    <thead>
+                                      <tr>
+                                        <th>Customer Name</th>
+                                        <!-- <th>Product</th> -->
+                                        <th>Date</th>
+                                        <th>Product Price</th>
+                                        <th>Quantity</th>
+                                        <th>Discount</th>
+                                        <th>Shipping Cost</th>
+                                        <th>Total</th>
+                                        <th>Status</th>
+                                        <th>Payment Method</th>
+                                        <th>Coupon Applied</th>
+                                        <th>Actions</th>
+                                      </tr>
+                                    </thead>
+                                    <tbody>
+                                      <% if(order) { %>
                                         <tr>
-                                            <th>product</th>
-    
-                                            <th>Date</th>
-                                            <th>Status</th>
-                                            <th>product-price</th>
-                                            <!-- <th>Coupon</th> -->
-                                            <!-- <th>Discount</th> -->
-                                            <!-- <th>Total</th> -->
-                                            <th>Payment Method</th>
-                                            
-                                            <!-- <th>message</th> -->
-                                            <th>Actions</th>
-                                        </tr>
-                                        </thead>
-                                        <tbody>
-                                            <%if(order){%>
-                                        <tr>
-                                            <td class="image product-thumbnail">
-                                                <img src="/uploads/<%= order.productId.images[0] %>" alt="" style="width: 100px; height: auto;">
-                                            </td>
-                                            
-                                           
-                                            <td ><%= order.date.toLocaleDateString('en-US', { weekday: 'short', year: 'numeric', month: 'short', day: 'numeric' }) %></td>
-                                            <td ><%if(order.product_orderStatus==="cancelled"||order.product_orderStatus==="Return cancelled") {%>
-                                                <span id="status-<%= order._id %>" class="text-danger"> <%= order.product_orderStatus %></span>
-                                            <%} else if(order.product_orderStatus==="pending" || order.product_orderStatus==="return" || order.product_orderStatus==="Return pending"){%> 
-                                                <span id="status-<%= order._id %>" class="text-warning"> <%= order.product_orderStatus %></span>
-                                            <%} else if (order.product_orderStatus==="completed" || order.product_orderStatus==="Return completed" || order.product_orderStatus==="Shipped"){%>
-                                                <span id="status-<%= order._id %>" class="text-success"> <%= order.product_orderStatus %></span>
-                                            <%}%></td>
-                                            <td>₹<%= order.productId.promo_Price %></td>
-                                            <!-- <td>
-                                            
-                                           
-
-
-                                            </td> -->
-                                            
-                                           
-                                            </td>
-
-                                            <!-- <td >₹<%= order.totalPrice %></td> -->
-                                            <td ><%=order.payment_method.method %></td>
-                                            <!-- <td> <!-- Address Section -->
-                                                <!-- <% if (order.product_orderStatus==="return" || order.product_orderStatus==="Return pending" || order.product_orderStatus==="Return completed" ){%>
-                                                    <p>
-                                                        <%= order.message %>
-                                                    </p>
-                                                    <%}%> --> -->
-                                                
-                                                <!-- <% if (userOrder) { %>
-                                                    <div class="address-card">
-                                                        <p>
-                                                            <strong><%= userOrder.name %></strong><br>
-                                                            <%= userOrder.street %>, <%= userOrder.city %><br>
-                                                            <%= userOrder.state %>, <%= userOrder.country %> - <%= userOrder.pincode %><br>
-                                                            <abbr title="Phone">P:</abbr> <%= userOrder.mobile %>
-                                                        </p>
-                                                    </div>
+                                          <td><%=userOrder.name%></td>
+                                         
+                                          <!-- <td class="image product-thumbnail">
+                                            <img src="/uploads/<%= order.productId.images[0] %>" alt="" style="width: 100px; height: auto;">
+                                          </td> -->
+                                          <td><%= order.date.toLocaleDateString('en-US', { weekday: 'short', year: 'numeric', month: 'short', day: 'numeric' }) %></td>
+                                          <td>₹<%= order.productPrice %></td>
+                                          <td><%=order.quantity %></td>
+                                          <td>0</td>
+                                          <td>50</td>
+                                          <td><%=order.productPrice*order.quantity+50%></td>
+                                          <td>
+                                            <% if(order.product_orderStatus === "cancelled" || order.product_orderStatus === "Return cancelled") { %>
+                                              <span id="status-<%= order._id %>" class="text-danger"><%= order.product_orderStatus %></span>
+                                            <% } else if(order.product_orderStatus === "pending" || order.product_orderStatus === "return" || order.product_orderStatus === "Return pending") { %>
+                                              <span id="status-<%= order._id %>" class="text-warning"><%= order.product_orderStatus %></span>
+                                            <% } else if(order.product_orderStatus === "completed" || order.product_orderStatus === "Return completed" || order.product_orderStatus === "Shipped") { %>
+                                              <span id="status-<%= order._id %>" class="text-success"><%= order.product_orderStatus %></span>
+                                            <% } %>
+                                          </td>
+                                          <td><%= order.payment_method.method %></td>
+                                         
+                                          <td>
+                                            <% if (order.coupon) { %>
+                                              <strong>Coupon Code:</strong> <%= order.coupon.coupon_Code %><br>
+                                              <strong>Description:</strong> <%= order.coupon.coupon_Description %><br>
+                                              <strong>Discount:</strong> <%= order.coupon.Offer_Percentage %>%
+                                            <% } else { %>
+                                              No coupon applied
+                                            <% } %>
+                                          </td>
+                                          <td class="text-end">
+                                            <ul>
+                                              <div class="dropdown">
+                                                <a href="#" data-bs-toggle="dropdown">Status</a>
+                                                <% if(order.product_orderStatus === "return" || order.product_orderStatus === "Return pending") { %>
+                                                  <div class="dropdown-menu">
+                                                    <a class="dropdown-item warning" href="#" onclick="confirmStatusChange('<%= order._id %>', 'Return completed')">Return success</a>
+                                                    <a class="dropdown-item warning" href="#" onclick="confirmStatusChange('<%= order._id %>', 'Return cancelled')">Return cancel</a>
+                                                  </div>
                                                 <% } else { %>
-                                                    <p>No order details available.</p>
-                                                <% } %>    -->
-                                            
-                                            
-                                            </td>
+                                                  <div class="dropdown-menu">
+                                                    <a class="dropdown-item" href="#" onclick="confirmStatusChange('<%= order._id %>', 'pending')">Pending</a>
+                                                    <a class="dropdown-item text-danger" href="#" onclick="confirmStatusChange('<%= order._id %>', 'cancelled')">Cancelled</a>
+                                                    <a class="dropdown-item" href="#" onclick="confirmStatusChange('<%= order._id %>', 'completed')">Completed</a>
+                                                    <a class="dropdown-item" href="#" onclick="confirmStatusChange('<%= order._id %>', 'Shipped')">Shipped</a>
+                                                  </div>
+                                                <% } %>
+                                              </div>
+                                            </ul>
+                                          </td>
+                                        </tr>
+                                        <tr>
+                                          <td colspan="7">
+                                            <strong>Customer Address:</strong><br>
+                                            <%= userOrder.name %><br>
+                                            <%= userOrder.street %>, <%= userOrder.city %><br>
+                                            <%= userOrder.state %>, <%= userOrder.country %> - <%= userOrder.pincode %><br>
+                                            <abbr title="Phone">P:</abbr> <%= userOrder.mobile %>
+                                          </td>
+                                        </tr>
+                                      
+                                    <!-- </tbody>
+                                  </table> -->
+                                </div>
+                              </div>
 
-
+<!-- 
                                             <td class="text-end">
                                                 <ul>
                                                   
@@ -447,7 +465,7 @@ th {
                                                   
                           
                                                 </ul>
-                                              </td>
+                                              </td> -->
                                         </tr>
                                         <%}%>
     

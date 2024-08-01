@@ -24,7 +24,8 @@ const setNoCacheHeaders = (req, res, next) => {
 };
 userRoute.set('view engine','ejs')
 userRoute.set('views','./views/users')
-userRoute.get('/',userController.loadHome)                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                       
+//userRoute.get('/',userController.loadHome)  
+userRoute.get('/',userController.load_UserHome)                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                     
 //userRoute.get('/login',userController.loadLogin)
 userRoute.get('/login-register',userController.loadRegister)
 userRoute.post('/login-register',userController.insertUser)
@@ -85,6 +86,8 @@ userRoute.get('/payment-failure',userAuth.isLogin,userController.payment_failure
 userRoute.post('/profile/referral',userAuth.isLogin,userController.referral)
 userRoute.post('/profile/refer',userAuth.isLogin,userController.refer)
 userRoute.delete('/delete/order/',userAuth.isLogin,userController.deleteOrder)
+userRoute.get('/order/invoice',orderController.loadInvoice)
+userRoute.get('/profile/orders/detail',userController.loadoderDetails)
 
 
 module.exports=userRoute

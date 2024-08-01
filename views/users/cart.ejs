@@ -732,43 +732,63 @@
                                                 <%= msg %>
                                             </div>
                                         <% } %>
-        
+            
                                         <% cart.products.forEach(item => { %>
                                             <tr>
                                                 <td class="image product-thumbnail">
-                                                    <img src="/uploads/<%= item.productId.images[0] %>" alt="#">
+                                                    <% if (item.productId && item.productId.images && item.productId.images.length > 0) { %>
+                                                        <img src="/uploads/<%= item.productId.images[0] %>" alt="#">
+                                                    <% } else { %>
+                                                        <img src="/path/to/placeholder/image.jpg" alt="Product not available">
+                                                    <% } %>
                                                 </td>
                                                 <td class="product-des product-name">
                                                     <h5 class="product-name">
-                                                        <a href="/productDetails?productId=<%= item.productId._id %>">
-                                                            <%= item.productId.name %>
-                                                        </a>
+                                                        <% if (item.productId) { %>
+                                                            <a href="/productDetails?productId=<%= item.productId._id %>">
+                                                                <%= item.productId.name %>
+                                                            </a>
+                                                            <p class="font-xs"><%= item.productId.description %><br></p>
+                                                            <% if (item.productId.isDelete) { %>
+                                                                <p class="text-danger">This product is no longer available.</p>
+                                                            <% } %>
+                                                        <% } else { %>
+                                                            Product not available
+                                                        <% } %>
                                                     </h5>
-                                                    <p class="font-xs"><%= item.productId.description %><br></p>
-                                                    <% if (item.productId.isDelete) { %>
-                                                        <p class="text-danger">This product is no longer available.</p>
-                                                    <% } %>
                                                 </td>
                                                 <td class="size" data-title="size">
                                                     <span id="size"><%= item.size %> </span>
-                                                    <input id="productId" type="hidden" value="<%= item.productId._id %>">
+                                                    <% if (item.productId) { %>
+                                                        <input id="productId" type="hidden" value="<%= item.productId._id %>">
+                                                    <% } %>
                                                 </td>
                                                 <td class="price" data-title="Price">
-                                                    <span>₹<%= item.productId.promo_Price %> </span>
+                                                    <% if (item.productId) { %>
+                                                        <span>₹<%= item.productId.promo_Price %> </span>
+                                                    <% } else { %>
+                                                        N/A
+                                                    <% } %>
                                                 </td>
                                                 <td>
                                                     <div>
-                                                        <input type="number" class="qty-val" value="<%= item.quantity %>" data-max-quantity="<%= item.productId.countInStock %>" data-product-id="<%= item.productId._id %>" style="width: 70px;">
+                                                        <input type="number" class="qty-val" value="<%= item.quantity %>" data-max-quantity="<%= item.productId ? item.productId.countInStock : 0 %>" data-product-id="<%= item.productId ? item.productId._id : '' %>" style="width: 70px;">
                                                         <div class="error-message" style="color: red; display: none;">Quantity exceeds available stock.</div>
                                                     </div>
                                                 </td>
                                                 <td class="text-right" data-title="Subtotal">
-                                                    <p class="total-price" data-product-id="<%= item.productId._id %>">₹<%= item.totalPrice %> </p>
+                                                    <p class="total-price" data-product-id="<%= item.productId ? item.productId._id : '' %>">₹<%= item.totalPrice %> </p>
                                                 </td>
                                                 <td class="action" data-title="Remove">
-                                                    <a href="#" onclick="confirmRemove('<%= item.productId._id %>','<%= item.size %>')" class="text-muted">
-                                                        <i class="fi-rs-trash"></i>
-                                                    </a>
+                                                    <% if (item.productId) { %>
+                                                        <a href="#" onclick="confirmRemove('<%= item.productId._id %>','<%= item.size %>')" class="text-muted">
+                                                            <i class="fi-rs-trash"></i>
+                                                        </a>
+                                                    <% } else { %>
+                                                        <a href="#" class="text-muted" onclick="return false;">
+                                                            <i class="fi-rs-trash"></i>
+                                                        </a>
+                                                    <% } %>
                                                 </td>
                                             </tr>
                                         <% }); %>
@@ -849,19 +869,20 @@
                                                     </tr>
                                                     <tr>
                                                         <td class="cart_total_label">Shipping</td>
-                                                        <td class="cart_total_amount"> <i class="ti-gift mr-5"></i> Free Shipping</td>
+                                                        <td class="cart_total_amount"> <i class="ti-gift mr-5"></i> 50</td>
                                                     </tr>
                                                     <tr class="text-right" data-title="Cart Total">
-                                                        <td colspan="2" class="font-lg fw-900 text-brand">Total: ₹<span id="total-amount"><%= totalprice %></span></td>
+                                                        <td colspan="2" class="font-lg fw-900 text-brand">Total: ₹<span id="total-amount"><%= totalprice +50%></span></td>
                                                     </tr>
                                                 </tbody>
                                             </table>
-                                            <% if (!cart.products.some(item => item.productId.isDelete)) { %>
+                                            <% if (!cart.products.some(item => item.productId && item.productId.isDelete)) { %>
                                                 <button class="btn" type="submit"><i class="fi-rs-box-alt mr-10">Proceed To CheckOut</i></button>
                                             <% } else { %>
                                                 <button class="btn" type="button" disabled><i class="fi-rs-box-alt mr-10">Proceed To CheckOut</i></button>
                                                 <p class="text-danger mt-2">One or more products are no longer available.</p>
                                             <% } %>
+                                            
                                         </form>
                                     </div>
                                 </div>
@@ -871,6 +892,7 @@
                 </div>
             </div>
         </section>
+        
     
     <footer class="main">
                 <div class="col-lg-6">
@@ -1191,6 +1213,10 @@ document.addEventListener('DOMContentLoaded', function () {
         .then(response => response.json())
         .then(data => {
             if (data.success) {
+                const totalAmount= document.getElementById('total-amount').textContent
+                const updateTotal = Number(totalAmount)+50
+                document.getElementById('total-amount').textContent = updateTotal;
+
                 console.log('Quantity updated successfully');
             } else {
                 console.error('Failed to update quantity');

@@ -202,11 +202,11 @@ th {
         <div class="content-header">
             <div>
                 <h2 class="content-title card-title">Offer</h2>
-                <p>Add, edit or delete a offer</p>
+                <p>Add, edit or delete an offer</p>
             </div>
             <div>
-                <a  class="btn btn-primary btn-sm rounded" href="/admin/offer/product/add" >Add Product Offer</a>
-                <a  class="btn btn-primary btn-sm rounded" href="/admin/offer/category/add" >Add Category Offer</a>
+                <a class="btn btn-primary btn-sm rounded" href="/admin/offer/product/add">Add Product Offer</a>
+                <a class="btn btn-primary btn-sm rounded" href="/admin/offer/category/add">Add Category Offer</a>
             </div>
         </div>
         <div class="card">
@@ -216,114 +216,79 @@ th {
                         <div class="table-responsive">
                             <table class="table table-hover">
                                 <thead>
-                                <tr>
-                                    <th>Status</th>
-                                    <th>Product Name</th>
-                                    <th>Offer</th>
-                                    <th>Description</th>
-                                    <th>type</th>
-                                    <th>Offer Percentage</th>
-                                    <th>Update</th>
-                                    <th>Action</th>
-                                </tr>
+                                    <tr>
+                                        <th>Status</th>
+                                        <th>Product Name</th>
+                                        <th>Offer</th>
+                                        <th>Description</th>
+                                        <th>Type</th>
+                                        <th>Offer Percentage</th>
+                                        <th>Update</th>
+                                        <th>Action</th>
+                                    </tr>
                                 </thead>
                                 <tbody>
-                                  <%if (offer){%>
-                                    <% offer.forEach(ofr=>{%>
-                                <tr >
-                                  
-                                   
-                                    <td>
-                                      <% if (ofr.isActive){%>
-                                      
-                                        <span  class="badge badge-pill badge-soft-success" >Active</span>
-                                        <%} else {%>
-                                        <span class="badge badge-pill badge-soft-danger" >Blocked </span>
-                                      
-                                    </td>
-                                    <%}%>
-
-                                    
-                                     
-                                    <td>
-                                      <% if (ofr.product){%>
-                                    <%= ofr.product.name %>
-                                    <%}else{%>
-                                      <%= ofr.category.name %>
-                                      <%}%>
-                                    </td>
-                                    <td ><%= ofr.offerName  %></td>
-                                    <td ><%= ofr.offerDescription %></td>
-                                     <td>
-                                      <input type="text"  style="width: 100px;" class="form-control"  value="<%= ofr.offertype %>" readonly></td>
-                                    <td ><%= ofr.Discount %></td>
-                                    <td>
-                                        <a href="/admin/offer/edit?offerId=<%= ofr._id %>" class="btn btn-success" >Edit</a>
-                                    </td>
-                                    <!-- <td>
-                                      <%if(ofr.isActive){%>
-                                        <button type="button" id="removebtn" class="btn btn-danger btn-sm" >Remove Offer </button>
-                                        <input type="hidden" value="<%= ofr._id %>" name="" id="removeId">
-                                        <input type="hidden" value="<%= ofr.offertype %>" id="removetype">
-                                        <% if(ofr.product) {%>
-                                        <input type="hidden" value="<%= ofr.product._id %>" name="" id="removepro">
-                                        <%} else {%>
-                                          <input type="hidden" value="<%= ofr.Discount %>" name="" id="removedis">
-                                          <input type="hidden" value="<%= ofr.category._id %>" name="" id="removecat">
-                                          <%} %>
-
-                                        <%}else{%>
-                                        <button type="button" id="applybtn"  class="btn btn-primary btn-sm "  > Apply Offer </button>
-                                        <input type="hidden" value="<%= ofr._id %>" name="" id="applyId">
-                                        <input type="hidden" value="<%= ofr.offertype %>" id="applytype">
-
-                                        <% if(ofr.product) {%>
-                                        <input type="hidden" value="<%= ofr.product._id %>" name="" id="applypro">
-                                        <%} else {%>
-                                          <input type="hidden" value="<%= ofr.Discount %>" name="" id="applydis">
-
-                                          <input type="hidden" value="<%= ofr.category._id %>" name="" id="applycat">
-                                          <%}%>
-
-                                        <%}%>
-                                       
-                                    </td> -->
-                                    <td>
-                                      <% if(ofr.isActive) { %>
-                                          <button type="button" id="removebtn_<%= ofr._id %>" class="btn btn-danger btn-sm">Remove Offer</button>
-                                          <input type="hidden" value="<%= ofr._id %>" id="removeId_<%= ofr._id %>">
-                                          <input type="hidden" value="<%= ofr.offertype %>" id="removetype_<%= ofr._id %>">
-                                          <% if(ofr.product) { %>
-                                              <input type="hidden" value="<%= ofr.product._id %>" id="removepro_<%= ofr._id %>">
-                                          <% } else { %>
-                                              <input type="hidden" value="<%= ofr.Discount %>" id="removedis_<%= ofr._id %>">
-                                              <input type="hidden" value="<%= ofr.category._id %>" id="removecat_<%= ofr._id %>">
-                                          <% } %>
-                                      <% } else { %>
-                                          <button type="button" id="applybtn_<%= ofr._id %>" class="btn btn-primary btn-sm">Apply Offer</button>
-                                          <input type="hidden" value="<%= ofr._id %>" id="applyId_<%= ofr._id %>">
-                                          <input type="hidden" value="<%= ofr.offertype %>" id="applytype_<%= ofr._id %>">
-                                          <% if(ofr.product) { %>
-                                              <input type="hidden" value="<%= ofr.product._id %>" id="applypro_<%= ofr._id %>">
-                                          <% } else { %>
-                                              <input type="hidden" value="<%= ofr.Discount %>" id="applydis_<%= ofr._id %>">
-                                              <input type="hidden" value="<%= ofr.category._id %>" id="applycat_<%= ofr._id %>">
-                                          <% } %>
-                                      <% } %>
-                                  </td>
-                                  
-                                    <%})%>
-                                </tr>
-                                <%}%>
+                                    <% if (offer) { %>
+                                        <% offer.forEach(ofr => { %>
+                                            <tr>
+                                                <td>
+                                                    <% if (ofr.isActive) { %>
+                                                        <span class="badge badge-pill badge-soft-success">Active</span>
+                                                    <% } else { %>
+                                                        <span class="badge badge-pill badge-soft-danger">Blocked</span>
+                                                    <% } %>
+                                                </td>
+                                                <td>
+                                                    <% if (ofr.product && ofr.product.name) { %>
+                                                        <%= ofr.product.name %>
+                                                    <% } else if (ofr.category && ofr.category.name) { %>
+                                                        <%= ofr.category.name %>
+                                                    <% } %>
+                                                </td>
+                                                <td><%= ofr.offerName %></td>
+                                                <td><%= ofr.offerDescription %></td>
+                                                <td>
+                                                    <input type="text" style="width: 100px;" class="form-control" value="<%= ofr.offertype %>" readonly>
+                                                </td>
+                                                <td><%= ofr.Discount %></td>
+                                                <td>
+                                                    <a href="/admin/offer/edit?offerId=<%= ofr._id %>" class="btn btn-success">Edit</a>
+                                                </td>
+                                                <td>
+                                                    <% if (ofr.isActive) { %>
+                                                        <button type="button" id="removebtn_<%= ofr._id %>" class="btn btn-danger btn-sm">Remove Offer</button>
+                                                        <input type="hidden" value="<%= ofr._id %>" id="removeId_<%= ofr._id %>">
+                                                        <input type="hidden" value="<%= ofr.offertype %>" id="removetype_<%= ofr._id %>">
+                                                        <% if (ofr.product) { %>
+                                                            <input type="hidden" value="<%= ofr.product._id %>" id="removepro_<%= ofr._id %>">
+                                                        <% } else if (ofr.category) { %>
+                                                            <input type="hidden" value="<%= ofr.Discount %>" id="removedis_<%= ofr._id %>">
+                                                            <input type="hidden" value="<%= ofr.category._id %>" id="removecat_<%= ofr._id %>">
+                                                        <% } %>
+                                                    <% } else { %>
+                                                        <button type="button" id="applybtn_<%= ofr._id %>" class="btn btn-primary btn-sm">Apply Offer</button>
+                                                        <input type="hidden" value="<%= ofr._id %>" id="applyId_<%= ofr._id %>">
+                                                        <input type="hidden" value="<%= ofr.offertype %>" id="applytype_<%= ofr._id %>">
+                                                        <% if (ofr.product) { %>
+                                                            <input type="hidden" value="<%= ofr.product._id %>" id="applypro_<%= ofr._id %>">
+                                                        <% } else if (ofr.category) { %>
+                                                            <input type="hidden" value="<%= ofr.Discount %>" id="applydis_<%= ofr._id %>">
+                                                            <input type="hidden" value="<%= ofr.category._id %>" id="applycat_<%= ofr._id %>">
+                                                        <% } %>
+                                                    <% } %>
+                                                </td>
+                                            </tr>
+                                        <% }) %>
+                                    <% } %>
                                 </tbody>
                             </table>
                         </div>
-                    </div> <!-- .col// -->
-                </div> <!-- .row // -->
-            </div> <!-- card body .// -->
-        </div> <!-- card .// -->  
-        <!-- Add category-->
-    </section> <!-- content-main end// -->
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+    
     
 </main>
 <!-- Include SweetAlert JavaScript -->

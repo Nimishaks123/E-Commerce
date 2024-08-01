@@ -1031,6 +1031,8 @@
                                                 <span>₹<%= product.discountedPrice %></span>
                                                 <% if (product.discountedPrice < product.price) { %>
                                                 <span class="old-price">₹<%= product.price %></span>
+                                                <% } else { %>
+                                                <span>₹<%= product.promo_Price %></span>
                                                 <% } %>
                                             </div>
                                             <!-- <div class="product-action-1 show">

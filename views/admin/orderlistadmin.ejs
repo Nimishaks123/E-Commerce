@@ -245,85 +245,18 @@ th {
                 ><i class="material-icons md-cast"></i
               ></a>
             </li>
-            <!-- <li class="dropdown nav-item">
-              <a
-                class="dropdown-toggle"
-                data-bs-toggle="dropdown"
-                href="#"
-                id="dropdownLanguage"
-                aria-expanded="false"
-                ><i class="material-icons md-public"></i
-              ></a>
-              <div
-                class="dropdown-menu dropdown-menu-end"
-                aria-labelledby="dropdownLanguage"
-              >
-                <a class="dropdown-item text-brand" href="#"
-                  ><img
-                    src="/admin/assets/imgs/theme/flag-us.png"
-                    alt="English"
-                  />English</a
-                >
-                <a class="dropdown-item" href="#"
-                  ><img
-                    src="/admin/assets/imgs/theme/flag-fr.png"
-                    alt="Français"
-                  />Français</a
-                >
-                <a class="dropdown-item" href="#"
-                  ><img
-                    src="/admin/assets/imgs/theme/flag-jp.png"
-                    alt="Français"
-                  />日本語</a
-                >
-                <a class="dropdown-item" href="#"
-                  ><img
-                    src="/admin/assets/imgs/theme/flag-cn.png"
-                    alt="Français"
-                  />中国人</a
-                >
+            <li class="dropdown nav-item">
+              <a class="dropdown-toggle" data-bs-toggle="dropdown" href="#" id="dropdownAccount" aria-expanded="false"> <img class="img-xs rounded-circle" src="/admin/assets/imgs/people/avatar2.jpg" alt="User"></a>
+              <div class="dropdown-menu dropdown-menu-end" aria-labelledby="dropdownAccount">
+                  <a class="dropdown-item" href="#"><i class="material-icons md-perm_identity"></i>Edit Profile</a>
+                  <a class="dropdown-item" href="#"><i class="material-icons md-settings"></i>Account Settings</a>
+                  <a class="dropdown-item" href="#"><i class="material-icons md-account_balance_wallet"></i>Wallet</a>
+                  <a class="dropdown-item" href="#"><i class="material-icons md-receipt"></i>Billing</a>
+                  <a class="dropdown-item" href="#"><i class="material-icons md-help_outline"></i>Help center</a>
+                  <div class="dropdown-divider"></div>
+                  <a class="dropdown-item text-danger" href="/admin/logout"><i class="material-icons md-exit_to_app"></i>Logout</a>
               </div>
-            </li> -->
-            <!-- <li class="dropdown nav-item">
-              <a
-                class="dropdown-toggle"
-                data-bs-toggle="dropdown"
-                href="#"
-                id="dropdownAccount"
-                aria-expanded="false"
-              >
-                <img
-                  class="img-xs rounded-circle"
-                  src="/admin/assets/imgs/people/avatar2.jpg"
-                  alt="User"
-              /></a>
-              <div
-                class="dropdown-menu dropdown-menu-end"
-                aria-labelledby="dropdownAccount"
-              >
-                <a class="dropdown-item" href="#"
-                  ><i class="material-icons md-perm_identity"></i>Edit
-                  Profile</a
-                >
-                <a class="dropdown-item" href="#"
-                  ><i class="material-icons md-settings"></i>Account Settings</a
-                >
-                <a class="dropdown-item" href="#"
-                  ><i class="material-icons md-account_balance_wallet"></i
-                  >Wallet</a
-                >
-                <a class="dropdown-item" href="#"
-                  ><i class="material-icons md-receipt"></i>Billing</a
-                >
-                <a class="dropdown-item" href="#"
-                  ><i class="material-icons md-help_outline"></i>Help center</a
-                >
-                <div class="dropdown-divider"></div>
-                <a class="dropdown-item text-danger" href="#"
-                  ><i class="material-icons md-exit_to_app"></i>Logout</a
-                >
-              </div>
-            </li> -->
+          </li> 
           </ul>
         </div>
       </header>
@@ -366,7 +299,7 @@ th {
           </header>
           <!-- card-header end// -->
           <div class="container">
-            <h1>Order List</h1>
+            <!-- <h1>Order List</h1> -->
             <div class="table-responsive">
                 <table class="table table-hover">
                     <thead>
@@ -378,7 +311,7 @@ th {
                             <th>Order Status</th>
                             <th>Payment Method</th>
                             <th>Total Amount</th>
-                            <th>Action</th>
+                            <!-- <th>Action</th> -->
                             <th>Details</th>
                         </tr>
                     </thead>
@@ -393,7 +326,7 @@ th {
                                             weekday: 'short', year: 'numeric', month: 'short', day: 'numeric' }) %>
                                         </td>
                                         
-                                        <!-- <td><%= product.productId.name %></td> -->
+                                       
                                         <td>
                                             <% if (product.product_orderStatus === "cancelled") { %>
                                                 <span class="text-danger"><%= product.product_orderStatus %></span>
@@ -404,8 +337,8 @@ th {
                                             <% } %>
                                         </td>
                                         <td><%= product.payment_method.method %></td>
-                                        <td>₹<%= product.productPrice %></td>
-                                        <td>
+                                        <td>₹<%= product.productPrice+50 %></td>
+                                        <!-- <td>
                                             <div class="dropdown">
                                                 <a href="#" data-bs-toggle="dropdown">Status</a>
                                                 <div class="dropdown-menu">
@@ -414,7 +347,7 @@ th {
                                                     <a class="dropdown-item" href="#" onclick="handleStatusClick('<%= product._id %>', '<%= order._id %>', 'completed')">Completed</a>
                                                 </div>
                                             </div>
-                                        </td>
+                                        </td> -->
                                         <td>
                                             <a href="/admin/order-detail?id=<%= product._id %>" class="text-success">View</a>
                                         </td>
@@ -427,17 +360,7 @@ th {
                     </tbody>
                 </table>
             </div>
-            <div class="pagination">
-              <% if (currentPage > 1) { %>
-                <a href="?page=<%= currentPage - 1 %>&limit=<%= limit %>">Previous</a>
-              <% } %>
-              <% for (let i = 1; i <= totalPages; i++) { %>
-                <a href="?page=<%= i %>&limit=<%= limit %>" class="<%= currentPage === i ? 'active' : '' %>"><%= i %></a>
-              <% } %>
-              <% if (currentPage < totalPages) { %>
-                <a href="?page=<%= currentPage + 1 %>&limit=<%= limit %>">Next</a>
-              <% } %>
-            </div>
+           
           </div>
             </div>
             <!-- table-responsive //end -->

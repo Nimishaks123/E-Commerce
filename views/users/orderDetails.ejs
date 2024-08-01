@@ -111,7 +111,9 @@
             <div class="container">
                 <div class="header-wrap header-space-between position-relative">
                     <div class="logo logo-width-1">
-                        <a href="/">Shopiz</a>
+                        <!-- <a href="/">Shopiz</a> -->  
+                        <a href="#"><img src="/user/assets/imgs/theme/logo.svg" alt="logo"></a>
+
                         <!-- <a href="index.html"><img src="/user/assets/imgs/theme/logo.svg" alt="logo"></a> -->
                     </div>
                     <div class="main-menu main-menu-grow main-menu-padding-1 main-menu-lh-1 main-menu-mrg-1 hm3-menu-padding d-none d-lg-block hover-boder">
@@ -144,10 +146,12 @@
                 </div>
             </div>
         </div>
-        <section class="pt-80 pb-100">
+        
+      
+        <!-- <section class="pt-80 pb-100">
             <div class="container">
                 <div class="row">
-                    <% if (order) { %>
+               
                         <div class="card">
                             <div class="card-header">
                                 <h5 class="mb-0">Your Orders</h5>
@@ -235,6 +239,137 @@
                                 </div>
                             </div>
                         </div>
+                    
+                </div>
+            </div>
+        </section> -->
+       
+        <section class="pt-80 pb-100">
+            <div class="container">
+                <div class="row">
+                    <% if (order) { %>
+                        <div class="card">
+                            <div class="card-header">
+                                <h5 class="mb-0">Your Orders</h5>
+                                <div class="invoice-header">
+                                    <% if (order.product_orderStatus === 'completed') { %>
+                                        <a href="/order/invoice?orderId=<%= order._id %>">
+                                            <button class="btn btn-primary">Invoice <span>&#128229;</span></button>
+                                        </a>
+                                    <% } else { %>
+                                        <button class="btn btn-secondary disabled-button" disabled>Invoice <span>&#128229;</span></button>
+                                    <% } %>
+                                </div>
+                            </div>
+                            <div class="card-body">
+                                <div class="table-responsive">
+                                    <table class="table">
+                                        <thead>
+                                            <tr>
+                                                <th>OrderId</th>
+                                                <th>Product</th>
+                                                <th>Date</th>
+                                                <th>Status</th>
+                                                <th>Product Price</th>
+                                                <th>Quantity</th>
+                                                <th>Delivery Charge</th>
+                                                <th>Total</th>
+                                                <th>Payment Method</th>
+                                                <th>Address</th>
+                                                <th>Coupon Used</th>
+                                                <th>Offer Applied</th>
+                                                <th>Actions</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <tr>
+                                                <td><%=orderId%></td>
+                                                <td class="image product-thumbnail">
+                                                    <img src="/uploads/<%= order.productId.images[0] %>" alt="Product Image">
+                                                </td>
+                                                <td>
+                                                    <%= new Date(order.date).toLocaleDateString('en-US', {
+                                                        weekday: 'short',
+                                                        year: 'numeric',
+                                                        month: 'short',
+                                                        day: 'numeric'
+                                                    }) %>
+                                                </td>
+                                                <td>
+                                                    <% if (order.product_orderStatus === "cancelled") { %>
+                                                        <span id="status-<%= order._id %>" class="text-danger">
+                                                            <%= order.product_orderStatus %>
+                                                        </span>
+                                                    <% } else if (order.product_orderStatus === "pending" || order.product_orderStatus === "return") { %>
+                                                        <span id="status-<%= order._id %>" class="text-warning">
+                                                            <%= order.product_orderStatus %>
+                                                        </span>
+                                                    <% } else if (order.product_orderStatus === "completed") { %>
+                                                        <span id="status-<%= order._id %>" class="text-success">
+                                                            <%= order.product_orderStatus %>
+                                                        </span>
+                                                    <% } else if (order.product_orderStatus === "payment failed") { %>
+                                                        <span id="status-<%= order._id %>" class="text-danger">
+                                                            <%= order.product_orderStatus %>
+                                                        </span>
+                                                    <% } %>
+                                                </td>
+                                                <td>₹<%= order.productId.promo_Price %></td>
+                                                <td><%=order.quantity%></td>
+                                                <td>50</td>
+                                                <td>₹<%= order.productPrice+50 %></td>
+                                                <td><%= order.payment_method.method %></td>
+                                                <td>
+                                                    <% if (userOrder && userOrder.address && userOrder.address.length > 0) { %>
+                                                        <% userOrder.address.forEach(function(addr) { %>
+                                                            <div class="address-card">
+                                                                <p>
+                                                                    <strong><%= addr.name %></strong><br>
+                                                                    <%= addr.street %>, <%= addr.city %><br>
+                                                                    <%= addr.state %>, <%= addr.country %> - <%= addr.pincode %><br>
+                                                                    <abbr title="Phone">P:</abbr> <%= addr.mobile %>
+                                                                </p>
+                                                            </div>
+                                                        <% }) %>
+                                                    <% } else { %>
+                                                        <p>No shipping address found.</p>
+                                                    <% } %>
+                                                </td>
+                                                <td>
+                                                    <% if (couponDetails) { %>
+                                                        <p><%= couponDetails.coupon_Code %> - <%= couponDetails.Offer_Percentage %>% off</p>
+                                                    <% } else { %>
+                                                        <p>No coupon used</p>
+                                                    <% } %>
+                                                </td>
+                                                <td>
+                                                    <% if (offerDetails) { %>
+                                                        <p><%= offerDetails.offerName %> - <%= offerDetails.Discount %>% off</p>
+                                                    <% } else { %>
+                                                        <p>No offer applied</p>
+                                                    <% } %>
+                                                </td>
+                                                <td>
+                                                    <% if (order.product_orderStatus !== "cancelled" && order.product_orderStatus === "pending") { %>
+                                                        <form id="cancelOrderForm" action="/cancel" method="POST">
+                                                            <input type="hidden" name="orderId" value="<%= orderId %>">
+                                                            <input type="hidden" name="productId" value="<%= order._id %>">
+                                                            <button type="submit" id="cancelButton-<%= order._id %>" class="btn-small d-block btn-danger">
+                                                                Cancel
+                                                            </button>
+                                                        </form>
+                                                    <% } else if (order.product_orderStatus === "cancelled") { %>
+                                                        <button class="btn btn-danger" disabled>
+                                                            Cancelled
+                                                        </button>
+                                                    <% } %>
+                                                </td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
                     <% } %>
                 </div>
             </div>
@@ -276,7 +411,7 @@
                     console.log("productId", productId);
     
                     try {
-                        const response = await fetch('/cancel', {
+                        const response = await fetch('/order/cancel', {
                             method: 'PUT',
                             body: JSON.stringify({ orderId, productId }),
                             headers: {
