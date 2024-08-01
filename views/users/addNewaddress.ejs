@@ -1,0 +1,295 @@
+<!DOCTYPE html>
+<html class="no-js" lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <title>Evara - eCommerce HTML Template</title>
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <meta name="description" content="">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta property="og:title" content="">
+    <meta property="og:type" content="">
+    <meta property="og:url" content="">
+    <meta property="og:image" content="">
+    <!-- Favicon -->
+    <link rel="shortcut icon" type="image/x-icon" href="/user/assets/imgs/theme/favicon.svg">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.0.0/dist/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+    <!-- Template CSS
+    <link rel="stylesheet" href="/user/assets/css/main.css?v=3.4"> -->
+    <style>
+     .address-form {
+    max-width: 400px;
+    margin: 20px auto; /* Added margin to the top and bottom */
+    padding: 20px;
+    border: 1px solid #ccc;
+    border-radius: 8px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+}
+
+.form-group {
+    margin-bottom: 20px;
+}
+
+label {
+    display: block;
+    margin-bottom: 5px;
+}
+
+input[type="text"],
+input[type="number"],
+input[type="email"],
+textarea {
+    width: 100%;
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+}
+
+button {
+    padding: 10px 20px;
+    background-color: #007bff;
+    color: #fff;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+}
+
+button:hover {
+    background-color: #0056b3;
+}
+
+    </style>
+
+    </head>
+    <body>
+
+
+        <div class="address-form">
+            <h2>Enter Address</h2>
+            <form method="post" name="addressForm" onsubmit="return validateAddress()">
+                <div class="form-group">
+                    <label for="full_name">Full Name:</label>
+                    <input id="name" class="form-control" id="full_name" name="full_name" type="text">
+                    <div id="name-error" class="text-danger"></div>
+                </div>
+                <div class="form-group">
+                    <label for="country">Country:</label>
+                    <input class="form-control" id="country" name="country" type="text">
+                    <div id="country-error" class="text-danger"></div>
+
+                </div>
+                <div class="form-group">
+                    <label for="state">State:</label>
+                    <input class="form-control" id="state" name="state" type="text">
+                    <div id="state-error" class="text-danger"></div>
+                </div>
+                <div class="form-group">
+                    <label for="city">City:</label>
+                    <input class="form-control" id="city" name="city" type="text">
+                    <div id="city-error" class="text-danger"></div>
+
+                </div>
+                <div class="form-group">
+                    <label for="city">Street:</label>
+                    <input class="form-control" id="street" name="street" type="text">
+                    <div id="street-error" class="text-danger"></div>
+                </div>
+                
+                <div class="form-group">
+                    <label for="pincode">Pincode:</label>
+                    <input class="form-control" id="pincode" name="pincode" type="number">
+                    <div id="pincode-error" class="text-danger"></div>
+                </div>
+                <div class="form-group">
+                    <label for="mobile">Mobile:</label>
+                    <input class="form-control" id="mobile" name="mobile" type="number">
+                    <div id="mobile-error" class="text-danger"></div>
+                </div>
+                <button type="submit" class="btn btn-primary">Submit</button>
+                <p class="mb-50 font-sm">
+                    <% if(typeof msg != "undefined"){ %>
+                        <p class="text-danger"><%= msg %></p>
+                    <% } %>
+                </p>
+            </form>
+        </div>
+
+        
+
+
+
+        <script>
+
+                const name=document.getElementById('name').addEventListener('input',validateAddress)
+                const country=document.getElementById('country').addEventListener('input',validateAddress)
+                const street=document.getElementById('street').addEventListener('input',validateAddress)
+                const city=document.getElementById('city').addEventListener('input',validateAddress)
+                const pincode=document.getElementById('pincode').addEventListener('input',validateAddress)
+                const state=document.getElementById('state').addEventListener('input',validateAddress)
+                const mobile=document.getElementById('mobile').addEventListener('input',validateAddress)
+
+            function validateAddress()
+            {
+                const name=document.getElementById('name').value
+                const country=document.getElementById('country').value
+                const street=document.getElementById('street').value
+                const city=document.getElementById('city').value
+                const pincode=document.getElementById('pincode').value
+                const state=document.getElementById('state').value
+
+                const mobile=document.getElementById('mobile').value
+                var isValid=true
+
+                if(name ==="" )
+                {
+                    document.getElementById('name-error').innerHTML="enter the name"
+                    isValid=false
+                }else{
+                    document.getElementById("name-error").innerHTML=""
+
+                }
+                if(country==="")
+                {
+                    document.getElementById('country-error').innerHTML="enter the country"
+                    isValid=false
+                }
+                else
+                {
+                    document.getElementById("country-error").innerHTML=""
+                }
+                if(street==="")
+                {
+                    document.getElementById("street-error").innerHTML="enter the Street"
+                    isValid=false
+                }
+                else
+                {
+                    document.getElementById('street-error').innerHTML=""
+                }
+                if(city==="")
+                {
+                    document.getElementById('city-error').innerHTML="enter the city"
+                    isValid=false
+                }
+                else
+                {
+                    document.getElementById('city-error').innerHTML=""
+                }
+                if(pincode==="")
+                {
+                    document.getElementById('pincode-error').innerHTML="enter pincode"
+                    isValid=false
+                }
+                else
+                {
+                    document.getElementById('pincode-error').innerHTML=""
+                }
+                if(mobile==="")
+                {
+                    document.getElementById('mobile-error').innerHTML="enter the mobile number"
+                    isValid=false
+                }
+                else if(mobile.length>10 || mobile.length < 10)
+                {
+                    document.getElementById('mobile-error').innerHTML="enter the valid mobile number"
+                    isValid=false
+                }
+                else
+                {
+                    document.getElementById('mobile-error').innerHTML=""
+                }
+                if(state=="")
+                {
+                    document.getElementById('state-error').innerHTML="enter the state"
+                    isValid=false
+                }
+                else
+                {
+                    document.getElementById('state-error').innerHTML=""
+                }
+
+                return isValid
+
+            }
+
+
+
+
+
+            
+//         // adding address landing
+//         document.addEventListener("DOMContentLoaded", function() {
+//     const addAddressForm = document.getElementById("addAddressForm");
+
+//     addAddressForm.addEventListener("submit", function(event) {
+//         event.preventDefault(); // Prevent default form submission
+
+//         // Collect form data
+//         const formData = new FormData(this);
+
+//         // Send AJAX request to add the address
+//         fetch("/profile/address/add", {
+//     method: 'POST',
+//     body: formData
+// })
+// .then(response => {
+//     if (response.ok) {
+//         return response.json();
+//     } else {
+//         throw new Error('Network response was not ok');
+//     }
+// })
+// .then(data => {
+//     // Check if the response contains a message and a redirect URL
+//     if (data && data.message && data.redirect) {
+//         console.log(data.message); // Log the message
+//         // Redirect to the specified URL
+//         window.location.href = data.redirect;
+//     }
+// })
+
+
+//         .catch(error => {
+//             console.error('Error adding address:', error);
+//         });
+//     });
+// });
+
+        </script>
+        
+        
+
+
+
+
+
+
+    <script src="/user/assets/js/vendor/modernizr-3.6.0.min.js"></script>
+    <script src="/user/assets/js/vendor/jquery-3.6.0.min.js"></script>
+    <script src="/user/assets/js/vendor/jquery-migrate-3.3.0.min.js"></script>
+    <script src="/user/assets/js/vendor/bootstrap.bundle.min.js"></script>
+    <script src="/user/assets/js/plugins/slick.js"></script>
+    <script src="/user/assets/js/plugins/jquery.syotimer.min.js"></script>
+    <script src="/user/assets/js/plugins/wow.js"></script>
+    <script src="/user/assets/js/plugins/jquery-ui.js"></script>
+    <script src="/user/assets/js/plugins/perfect-scrollbar.js"></script>
+    <script src="/user/assets/js/plugins/magnific-popup.js"></script>
+    <script src="/user/assets/js/plugins/select2.min.js"></script>
+    <script src="/user/assets/js/plugins/waypoints.js"></script>
+    <script src="/user/assets/js/plugins/counterup.js"></script>
+    <script src="/user/assets/js/plugins/jquery.countdown.min.js"></script>
+    <script src="/user/assets/js/plugins/images-loaded.js"></script>
+    <script src="/user/assets/js/plugins/isotope.js"></script>
+    <script src="/user/assets/js/plugins/scrollup.js"></script>
+    <script src="/user/assets/js/plugins/jquery.vticker-min.js"></script>
+    <script src="/user/assets/js/plugins/jquery.theia.sticky.js"></script>
+
+    <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
+<script src="https://cdn.jsdelivr.net/npm/popper.js@1.12.9/dist/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@4.0.0/dist/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
+    <!-- Template  JS -->
+    <!-- <script src=".//user/assets/js/main.js?v=3.4"></script> -->
+</body>
+
+</html>

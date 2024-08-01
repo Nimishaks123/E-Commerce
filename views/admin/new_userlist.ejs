@@ -1,0 +1,270 @@
+
+
+
+<div class="container-xxl flex-grow-1 container-p-y">
+    <h4 class="py-3 mb-4">Users List</h4>
+
+
+
+<form id="searchForm" action="/admin/users" method="get">
+
+<div class="py-3 d-flex flex-row">
+    <div class="input-group input-group-merge">
+        <span class="input-group-text" id="basic-addon-search31"><i class="bx bx-search"></i></span>
+        <input
+        name="search"
+          type="text"
+          class="form-control"
+          placeholder="Search..."
+          aria-label="Search..."
+          aria-describedby="basic-addon-search31" />
+      </div>
+      <div class="ps-2">
+        <button type="submit" class="btn btn-icon btn-primary"><span class="tf-icons bx bx-search-alt"></span></button>
+      </div>
+</div>
+
+
+</form>
+
+<div>
+    <div class="card">
+        <h5 class="card-header">Users List</h5>
+        <div class="table-responsive text-nowrap">
+            <table class="table table-hover" >
+                <thead>
+                    <tr>
+                        <th>No.</th>
+                        <th>Name</th>
+                        <th>Email</th>
+                        <th>Phone No</th>
+                        <th>Status</th>
+                        <th>Edit</th>
+                    </tr>
+                </thead>
+                <tbody class="table-border-bottom-0" id="userContainer">
+                    <% if (users.length > 0) { %>
+                        <% users.forEach((user, index) => { %>
+                          <tr>
+                            <td><span class="fw-medium"><%= index + 1 %></span></td>
+                            <td><%= user.firstName %> <%= user.lastName %></td>
+                            <td>
+                              <ul class="list-unstyled users-list m-0 avatar-group d-flex align-items-center">
+                                <li><span><%= user.email %></span></li>
+                              </ul>
+                            </td>
+                            <td><span><%= user.mobile %></span></td>
+                            <td>
+                              <span>
+                                <span class="badge bg-label-primary me-1"><%= user.isBlocked ? 'Blocked' : 'Active' %></span>
+                              </span>
+                            </td>
+                            <td>
+                              <span>
+                                <% if (user.isBlocked === true) { %>
+                                  <a class="btn btn-success" href="#" onclick="unblockUser('<%- user._id %>')">Unblock</a>
+                                <% } else { %>
+                                  <a class="btn btn-danger" href="#" onclick="blockUser('<%- user._id %>')">Block</a>
+                                <% } %>
+                              </span>
+                            </td>
+                          </tr>
+                        <% }); %>
+                      <% } else { %>
+                        <tr>
+                          <td colspan="6">No users found.</td>
+                        </tr>
+                      <% } %>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+
+
+
+
+
+
+
+
+
+<%if (!search) { %>
+  
+                
+
+<div class="d-flex justify-content-center mt-4" id="pagination">
+    
+    <ul class="pagination pagination-m">
+
+
+        <% if (currentPage>1) { %>
+            
+        
+        <li class="page-item prev">
+          <a class="page-link" href="/admin/users?page=<%= currentPage-1 %>"
+            ><i class="tf-icon bx bx-chevrons-left"></i
+          ></a>
+        </li>
+
+        <% } %>
+        
+       <%  for(let i=1;i<=totalPage;i++){ %>
+            
+
+            
+             <li class="<%= currentPage == i ? 'active':''  %>">
+          <a class="page-link" href="/admin/users?page=<%= i %>"><%= i %></a>
+            </li>
+
+
+        <% }%>
+
+
+
+
+       <% if (currentPage<totalPage) { %>
+        
+        <li class="page-item next">
+            <a class="page-link" href="/admin/users?page=<%= parseInt(currentPage)+1 %>"
+              ><i class="tf-icon bx bx-chevrons-right"></i
+            ></a>
+          </li>
+
+        <% } %>
+        
+      </ul>
+
+</div>
+
+
+
+
+
+<% } %>
+
+
+
+
+
+
+
+
+                </div>
+                
+                <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script> <!-- Include SweetAlert library -->
+                
+                <script>
+                function blockUser(userId) {
+                    Swal.fire({
+                        title: 'Are you sure?',
+                        text: 'You are about to block this user!',
+                        icon: 'warning',
+                        showCancelButton: true,
+                        confirmButtonText: 'Yes, block it!',
+                        cancelButtonText: 'Cancel'
+                    }).then((result) => {
+                        if (result.isConfirmed) {
+                            window.location.href = "/admin/block?id=" + userId; // Redirect to the block route
+                        }
+                    });
+                }
+                
+                function unblockUser(userId) {
+                    Swal.fire({
+                        title: 'Are you sure?',
+                        text: 'You are about to unblock this user!',
+                        icon: 'warning',
+                        showCancelButton: true,
+                        confirmButtonText: 'Yes, unblock it!',
+                        cancelButtonText: 'Cancel'
+                    }).then((result) => {
+                        if (result.isConfirmed) {
+                            window.location.href = "/admin/unblock?id=" + userId; // Redirect to the unblock route
+                        }
+                    });
+                }
+                </script>
+
+
+
+                <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
+                <script>
+
+                  $(document).ready(function () {
+                    $('#searchForm').submit(function (e) {
+                      e.preventDefault()
+
+                        $.ajax({
+                          type:'GET', 
+                          url:'/admin/users',
+                          data:$(this).serialize(),
+                          success: function (response) {
+                            var users = response.users;
+
+                            // Clear the existing table rows
+                            $('#userContainer').empty();
+                            $('#pagination').empty()
+
+                            if (users.length > 0) {
+                              users.forEach(function (user, index) {
+                                var row = `
+                                  <tr>
+                                    <td><span class="fw-medium">${index + 1}</span></td>
+                                    <td>${user.firstName} ${user.lastName}</td>
+                                    <td>
+                                      <ul class="list-unstyled users-list m-0 avatar-group d-flex align-items-center">
+                                        <li><span>${user.email}</span></li>
+                                      </ul>
+                                    </td>
+                                    <td><span>${user.mobile}</span></td>
+                                    <td>
+                                      <span>
+                                        <span class="badge bg-label-primary me-1">${user.isBlocked ? 'Blocked' : 'Active'}</span>
+                                      </span>
+                                    </td>
+                                    <td>
+                                      <span>
+                                        ${user.isBlocked ? `<a class="btn btn-success" href="#" onclick="unblockUser('${user._id}')">Unblock</a>` : `<a class="btn btn-danger" href="#" onclick="blockUser('${user._id}')">Block</a>`}
+                                      </span>
+                                    </td>
+                                  </tr>
+                                `;
+
+                                // Append the row to the table
+                                $('#userContainer').append(row);
+                              })
+                            } else {
+                              var noUsersRow = '<tr class="text-center"><td colspan="6"><h5>No users found.</h5></td></tr>';
+                              $('#userContainer').append(noUsersRow);
+                            }
+                          },
+                          error: function (error) {
+                            console.log(error.message);
+                          }
+                        })
+
+                    })
+                  })
+
+
+
+
+
+
+
+
+
+
+
+                </script>
+
+
+
+
+
+
+
+
+
+

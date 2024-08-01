@@ -1,0 +1,233 @@
+<!DOCTYPE HTML>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <title>Shopiz</title>
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <meta name="description" content="">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta property="og:title" content="">
+    <meta property="og:type" content="">
+    <meta property="og:url" content="">
+    <meta property="og:image" content="">
+    <!-- Favicon -->
+    <link rel="shortcut icon" type="image/x-icon" href="/user/assets/imgs/theme/favicon.svg">
+    <!-- Template CSS -->
+    <link href="/user/assets/css/main.css" rel="stylesheet" type="text/css" />
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <style>
+        .invoice-wrapper {
+            border: 1px solid #ddd;
+            padding: 20px;
+            margin-top: 20px;
+        }
+        .invoice-header {
+            margin-bottom: 20px;
+        }
+        .invoice-header .company-details {
+            text-align: right;
+        }
+        .invoice-title {
+            font-size: 24px;
+            font-weight: bold;
+        }
+        .invoice-details {
+            margin-bottom: 20px;
+        }
+        .invoice-footer {
+            text-align: right;
+        }
+        .invoice-footer .total {
+            font-size: 18px;
+            font-weight: bold;
+        }
+        .line-items .headers {
+            font-weight: bold;
+            border-bottom: 2px solid #ddd;
+            margin-bottom: 10px;
+        }
+        .line-items .item {
+            border-bottom: 1px solid #eee;
+            padding: 10px 0;
+        }
+        .line-items .item:last-child {
+            border-bottom: none;
+        }
+        .total .field {
+            margin-bottom: 10px;
+        }
+        .total .grand-total {
+            font-size: 18px;
+            font-weight: bold;
+        }
+    </style>
+</head>
+
+<body>
+    <main class="container" >
+        <section class="content-main" >
+            <div class="content-header">
+                <div>
+                    <h2 class="content-title card-title">Invoice</h2>
+                    <p>Details for Order ID: <span><%=orderIdd%></span></p>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-lg-12 col-md-8">
+                    <div class="card">
+                        <header class="card-header">
+                            <div class="row align-items-center">
+                                <div class="col-lg-6 col-md-6 mb-lg-0 mb-15">
+                                    <span>
+                                        <strong>Date:</strong> <span th:text="${date}">Wed, Aug 13, 2022, 4:34PM</span>
+                                    </span>
+                                    <br>
+                                    <small class="text-muted">Order ID: <span><%= orderIdd %></span></small>
+                                    
+                                </div>
+                                <div class="col-lg-6 col-md-6 ms-auto text-md-end">
+                                    <a class="btn btn-primary pb-15" id="download-btn">
+                                        <span class="material-symbols-outlined"> Download PDF</span>
+                                    </a>
+                                </div>
+                            </div>
+                        </header>
+    
+                        <% if(order) { %>
+                        <div class="card-body" id="invoice">
+                            <div class="invoice-wrapper">
+                                <div class="invoice-header">
+                                    <div class="row">
+                                        <div class="col-md-6">
+                                            <h4>Hi <strong><%= user.userId.username %></strong>,</h4>
+                                            <p>This is the receipt for the payment of Rs <strong><%= order.productPrice %></strong> for your order.</p>
+                                        </div>
+                                        <div class="col-md-6 company-details">
+                                            <h4>Shopiz Pvt. Ltd</h4>
+                                            <p>
+                                                23, MA Street <br>
+                                                Mumbai, 460010 <br>
+                                                Maharashtra <br>
+                                                India <br>
+                                                <a href="mailto:Shopiz@gmail.com">Shopiz@gmail.com</a>
+                                            </p>
+                                        </div>
+                                    </div>
+                                </div>
+    
+                                <div class="invoice-details">
+                                    <div class="row">
+                                        <div class="col-sm-6">
+                                            <p><strong>Payment Method:</strong> <%= order.payment_method.method %></p>
+                                            <p><strong>Payment Date:</strong> <%= order.date.toLocaleDateString('en-US', { weekday: 'short', year: 'numeric', month: 'short', day: 'numeric' }) %></p>
+                                        </div>
+                                        <div class="col-sm-6 text-end">
+                                            <p><strong>Delivery Address:</strong></p>
+                                            <% if (userOrder && userOrder.address.length > 0) { %>
+                                                <% userOrder.address.forEach(function(addr) { %>
+                                                    <p>
+                                                        <strong><%= addr.name %></strong><br>
+                                                        <%= addr.street %>,<br>
+                                                        <%= addr.city %>,<br>
+                                                        <%= addr.state %>, <%= addr.country %><br>
+                                                        <%= addr.pincode %><br>
+                                                        <a href="mailto:<%= user.userId.email %>"><%= user.userId.email %></a>
+                                                    </p>
+                                                <% }) %>
+                                            <% } else { %>
+                                                <p>No shipping address found.</p>
+                                            <% } %>
+                                        </div>
+                                    </div>
+                                </div>
+    
+                                <div class="line-items">
+                                    <div class="headers clearfix">
+                                        <div class="row">
+                                            <div class="col-md-6">Description</div>
+                                            <div class="col-md-3 text-center">Quantity</div>
+                                            <div class="col-md-3 text-end">Amount</div>
+                                        </div>
+                                    </div>
+                                    <div class="items">
+                                        <div class="row item">
+                                            <div class="col-md-6 desc">
+                                                <%= order.productId.name %>
+                                            </div>
+                                            <div class="col-md-3 qty text-center">
+                                                <%= order.quantity %>
+                                            </div>
+                                            <div class="col-md-3 amount text-end">
+                                                Rs <%= order.productPrice %>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="total text-end">
+                                        <div class="field">
+                                            Subtotal: Rs <%= order.productPrice %>
+                                        </div>
+                                        <div class="field">
+                                            Shipping: Rs <span id="shippingPrice">50</span>
+                                        </div>
+                                        <div class="field">
+                                            Discount: Rs 
+                                            <% if (order.coupon) { %>
+                                                <input type="hidden" id="discountOffer" value="<%= order.coupon.Offer_Percentage %>">
+                                                <span id="discount"></span>
+                                            <% } else { %>
+                                                <span>0</span>
+                                            <% } %>
+                                        </div>
+                                        <div class="field grand-total">
+                                            Total: Rs <span id="totalPrice"><%= order.productPrice %></span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <% } %>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+    
+    <script src="/shop/login/js/vendors/jquery-3.6.0.min.js"></script>
+    <script src="/shop/login/js/vendors/bootstrap.bundle.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            const orderPrice = parseFloat(`<%= order.productPrice %>`);
+            const discountOfferElement = document.getElementById('discountOffer');
+            let discount = 0;
+    
+            if (discountOfferElement) {
+                const discountOffer = parseFloat(discountOfferElement.value);
+                discount = parseFloat((orderPrice * discountOffer) / 100).toFixed(2);
+                document.getElementById('discount').innerText = discount;
+            }
+    
+            const shippingPrice = parseFloat(document.getElementById('shippingPrice').textContent);
+            const totalPrice = orderPrice - discount+50;
+            document.getElementById('totalPrice').innerText = totalPrice.toFixed(2);
+    
+            document.getElementById('download-btn').addEventListener('click', async function () {
+                const { jsPDF } = window.jspdf;
+                const invoiceContent = document.querySelector('.card-body');
+                const canvas = await html2canvas(invoiceContent, { scale: 2 });
+                const pdf = new jsPDF('p', 'mm', 'a4');
+                const imgData = canvas.toDataURL('image/png');
+                const imgProps = pdf.getImageProperties(imgData);
+                const pdfWidth = pdf.internal.pageSize.getWidth();
+                const pdfHeight = (imgProps.height * pdfWidth) / imgProps.width;
+                pdf.addImage(imgData, 'PNG', 0, 0, pdfWidth, pdfHeight);
+                pdf.save('invoice.pdf');
+            });
+        });
+    </script>
+    </body>
+    </html>
