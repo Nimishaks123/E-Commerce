@@ -5,21 +5,14 @@ const Category = require('../models/categoryModel')
 const Order=require('../models/orderModel')
 const Coupon=require('../models/couponModel')
 const Address=require('../models/addressModel')
-//const PDFDocument = require('pdfkit');
-//const Product = require('../models/productModel')
-
 const loadLogin = async (req, res) => {
     try {
-        // Render the admin login page using the appropriate view template
         res.status(200).render('login');
     } catch (error) {
-        // If an error occurs during rendering, log it to the console and send a 500 response
         console.log("Error from admin controller loadLogin:", error);
         res.status(500).send("Internal Server Error");
     }
 };
-
-
 const verifyLogin = async (req, res) => {
   try {
       const { email, password } = req.body;
@@ -31,13 +24,6 @@ const verifyLogin = async (req, res) => {
           if (isPasswordCorrect && AdminData.is_admin === 1) {
               console.log("Password match. Logging in as admin...");
               req.session.admin = AdminData;
-              
-              // Fetch orders or any necessary data to pass to 'home'
-             // const orders = await Order.find({ userId: AdminData._id });
-              
-            //   const currentPage = 1; // Replace with actual current page logic
-            //   const limit = 10; // Replace with actual pagination limit
-            //  const totalPages=3;
               res.redirect('/admin/home');
           } else {
               console.log("Incorrect password or not an admin.");
@@ -54,12 +40,9 @@ const verifyLogin = async (req, res) => {
 };
 const  loadHome=async(req,res)=>{
     try {
-        //console.log("rendering..home");
-
         res.render('admin/home')
         
     } catch (error) {
-        
         console.log("error from admincontroller loadHome",error);
     }
 }
@@ -78,7 +61,6 @@ const logout = async (req, res) => {
         res.status(500).send('Internal Server Error');
     }
 };
-
 const userlist = async (req, res) => {
     try {
         const searchQuery = req.query.search || '';
@@ -93,11 +75,9 @@ const userlist = async (req, res) => {
             is_admin: 0,
             $or: [
                 { username: new RegExp(searchQuery, 'i') }
-                // { email: new RegExp(searchQuery, 'i') }
-            ]
+                ]
         };
-
-        if (searchQuery) {
+if (searchQuery) {
             user = await users.find(query).skip(skip).limit(limit);
            
             totalUsers = await users.countDocuments(query);
@@ -121,7 +101,6 @@ const userlist = async (req, res) => {
         res.status(500).send('An error occurred while fetching the user list.');
     }
 };
-
 const blockUser = async(req,res)=>{
     try {
 
@@ -139,8 +118,6 @@ const blockUser = async(req,res)=>{
         console.log(error.message);
     }
 }
-
-
 const unblockUser = async(req,res)=>{
     try {
 
@@ -212,8 +189,7 @@ const insertCategory = async (req, res) => {
 
             });
         } else {
-            // Create and save the new category
-            const categoryData = new Category({
+           const categoryData = new Category({
                 name: name,
                 description: description
             });
@@ -227,8 +203,7 @@ const insertCategory = async (req, res) => {
                 if (search) {
                     filter = { name: { $regex: search, $options: 'i' } };
                 }
-
-                const categories = await Category.find(filter).skip(startIndex).limit(limit);
+const categories = await Category.find(filter).skip(startIndex).limit(limit);
                 res.status(200).render('category', { 
                     successmessage: 'Category added successfully', 
                     categories: categories,
@@ -244,8 +219,6 @@ const insertCategory = async (req, res) => {
         res.status(500).send('An error occurred while adding the category.');
     }
 };
-
-
 const editCategory=async(req,res)=>{
 
     try {
@@ -330,110 +303,20 @@ const loadEditCategory=async(req,res)=>{
         console.log(('error from category conmtroll load edit user ',error));
     }
 }
-
-// const loadOrderList = async (req, res) => {
-//     try {
-//       // Fetch orders without populating userId and products.productId
-//       const page = parseInt(req.query.page) || 1;
-//       const limit = parseInt(req.query.limit) || 3;
-//       const productPage = parseInt(req.query.productPage) || 1;
-//       const productLimit = parseInt(req.query.productLimit) || 3;
-  
-//       const startIndex = (page - 1) * limit;
-//       const productStartIndex = (productPage - 1) * productLimit;
-//       // var page = 1;
-//       // if (req.query.page) {
-//       //   page = req.query.page;
-//       // }
-//       // const limit = 4;
-  
-//       const orderData = await Order.find()
-      
-//       .skip(startIndex)
-//       .limit(limit)
-//       .populate('userId')
-//       .populate('products.productId');
-      
-//       // // Now orderData contains populated products
-//       // console.log("orderData from Admin", orderData);
-  
-//       //   const totalOrders = await Order.countDocuments();;
-  
-//       //   const paginatedOrders = orderData.map(order => {
-//       //     const paginatedProducts = order.products.slice(productStartIndex, productStartIndex + productLimit);
-//       //     return {
-//       //         ...order.toObject(),
-//       //         products: paginatedProducts
-//       //     };
-//       // });
-      
-//       // // Now orderData contains populated products
-//       // console.log("paginatedorders", paginatedOrders);
-//       // console.log("paginated products", paginatedProducts);
-  
-  
-//       // Render or send the orderData as needed
-//       res.render("orderlistadmin", {
-//         orderData: orderData,
-//         // orderData: paginatedOrders,
-//         // currentPage: page,
-//         // totalPages: Math.ceil(totalOrders / limit),
-//         // productPage,
-//         // productLimit,
-//         // orderLimit: limit
-//       });
-  
-//       //   if (!orderData || !orderData.order || !Array.isArray(orderData.order)) {
-//       //     console.error("Order data is invalid or missing.");
-//       //     return;
-//       // }
-  
-//       // orderData.order.forEach(order => {
-//       //     if (!order.products || !Array.isArray(order.products)) {
-//       //         console.error("Products data in order is invalid or missing.");
-//       //         return;
-//       //     }
-  
-//       //     order.products.forEach(product => {
-//       //         console.log("Product ID: ", product.productId);
-//       //         console.log("Product Name: ", product.name);
-//       //         console.log("Product Price: ", product.price);
-//       //         // Add more properties as needed
-//       //     });
-//       // });
-  
-//       // res.render('admin/orderlist',{orderData})
-//     } catch (error) {
-//       console.log("error from  admin controller loadOrderList", error);
-//     }
-//   };
 const loadOrderList = async (req, res) => {
     try {
-      // const page = parseInt(req.query.page) || 1;
-      // const limit = parseInt(req.query.limit) || 3;
-      // const startIndex = (page - 1) * limit;
-  
-      // Fetch orders with pagination and populate userId and products.productId
       const orderData = await Order.find()
-        
         .populate('userId')
         .populate('products.productId');
-  
-      const totalOrders = await Order.countDocuments();
-  
-      res.render("orderlistadmin", {
+  const totalOrders = await Order.countDocuments();
+  res.render("orderlistadmin", {
         orderData: orderData,
-       
-      });
-  
-    } catch (error) {
+       });
+  } catch (error) {
       console.log("error from admin controller loadOrderList", error);
       res.status(500).send("Internal Server Error");
     }
   };
-  
-  
-
   const loadOrderDetails=async(req,res)=>{
     try {
       const orderId=req.query.id
@@ -485,9 +368,7 @@ const loadOrderList = async (req, res) => {
   }
   const loadCoupons=async(req,res)=>{
     try {
-
-
-        const couponData= await Coupon.find()
+const couponData= await Coupon.find()
         if(couponData)
             {
                 res.render('coupons',{coupon:couponData})
@@ -497,8 +378,7 @@ const loadOrderList = async (req, res) => {
                 console.log("no couponss find");
             }
        
-        
-    } catch (error) {
+      } catch (error) {
         
         console.log("error from coupon Controller loadCoupons",error);
     }
@@ -512,24 +392,16 @@ const loadaddCoupons=async(req,res)=>{
         console.log("error from coupons controller",error);
     }
 }
-  
-const addCoupons= async(req,res)=>{
+  const addCoupons= async(req,res)=>{
     try {
-
-
-        console.log("add Coupons renderinggg");
-
-
-
-        const{couponCode,couponDescription,
+ console.log("add Coupons renderinggg");
+const{couponCode,couponDescription,
             offerPercentage,couponCount,
             minimumOrderAmount,
             maximumOfferAmount,
             startDate,expireDate
         }=req.body
-
-
-        const uniqueCoupon= await Coupon.findOne({coupon_Code:{$regex:couponCode,$options:"i"}})
+const uniqueCoupon= await Coupon.findOne({coupon_Code:{$regex:couponCode,$options:"i"}})
         if(uniqueCoupon)
             {
               
@@ -557,12 +429,6 @@ const addCoupons= async(req,res)=>{
             {
                 console.log("not saved");
             }
-    
-
-
-
-        
-        
     } catch (error) {
         
         console.log("error from coupon controller addCoupons",error );
@@ -673,8 +539,6 @@ const orderDetailsUpdateStatus = async (req, res) => {
         console.log("error from coupon controller loadEditCoupon");
     }
 }
-
-
 const EditCoupon =async(req,res)=>{
     try {
         console.log("EditCoupon rendering...");
@@ -685,10 +549,7 @@ const EditCoupon =async(req,res)=>{
             maximumOfferAmount,
             startDate,expireDate,couponId
         }=req.body
-
-
-  
-        const couponData=await Coupon.findByIdAndUpdate(couponId,
+const couponData=await Coupon.findByIdAndUpdate(couponId,
            {$set:{
 
             coupon_Code:couponCode,
@@ -740,17 +601,11 @@ const loadOrders = async(req,res)=>{
       let totalDocuments = await Order.countDocuments();
   
       let totalPages = Math.ceil(totalDocuments / limit);
-
-    //   let list = await Cart.findOne({userId:id}).populate('products.productId')
-
-        // const orders = await Order.find({}).populate('userId')
-        res.render('new_orderList',{orders,page,totalPages})
+res.render('new_orderList',{orders,page,totalPages})
     } catch (error) {
         console.log("error from admin controller load orders",error);
     }
 }
-
-
 const cancelOrder = async(req,res) => {
     try {
         console.log('inside cancelorder');
@@ -794,8 +649,6 @@ const newloadOrderDetails = async (req, res) => {
     }
 };
 
-
-
 const statusChange = async(req,res) => {
     try {
     const orderId = req.query.id;
@@ -836,10 +689,6 @@ const statusChange = async(req,res) => {
         { new: true } // Return the updated document
       );
     }
-    // Optional: Trigger any necessary actions based on the new status
-    // For example, send email notifications, update inventory, etc.
-    // ... your logic here ...
-
     res.json({ success: true, updatedOrder });
     } catch (error) {
         console.log("error from admin controller status change");
@@ -847,57 +696,6 @@ const statusChange = async(req,res) => {
     }
 }
 
-
-// const getDashboard = async (req, res) => {
-//     try {
-//         const { startDate, endDate, predefinedRange, page = 1, limit = 10 } = req.query;
-
-//         let dateFilter = {};
-
-//         if (predefinedRange) {
-//             const now = new Date();
-//             switch (predefinedRange) {
-//                 case 'oneDay':
-//                     dateFilter = { date: { $gte: new Date(now.setDate(now.getDate() - 1)) } };
-//                     break;
-//                 case 'oneWeek':
-//                     dateFilter = { date: { $gte: new Date(now.setDate(now.getDate() - 7)) } };
-//                     break;
-//                 case 'oneMonth':
-//                     dateFilter = { date: { $gte: new Date(now.setMonth(now.getMonth() - 1)) } };
-//                     break;
-//                 case 'oneYear':
-//                     dateFilter = { date: { $gte: new Date(now.setFullYear(now.getFullYear() - 1)) } };
-//                     break;
-//                 default:
-//                     break;
-//             }
-//         } else if (startDate && endDate) {
-//             dateFilter = { date: { $gte: new Date(startDate), $lte: new Date(endDate) } };
-//         }
-
-//         const orders = await Order.find(dateFilter)
-           
-//             .populate('userId', 'username email')
-//             .populate('products.productId', 'name price')
-//             .skip((page - 1) * limit)
-//             .limit(Number(limit))
-//             .exec();
-//             console.log(orders);
-
-//         const totalOrders = await Order.countDocuments(dateFilter);
-
-//         res.render('admin/home', {
-//             orders,
-//             currentPage: Number(page),
-//             totalPages: Math.ceil(totalOrders / limit),
-//             limit: Number(limit),
-//             message: 'Orders fetched successfully.'
-//         });
-//     } catch (error) {
-//         res.status(500).send('Server Error');
-//     }
-// };
 const getDashboard = async (req, res) => {
   try {
     const today = new Date();
