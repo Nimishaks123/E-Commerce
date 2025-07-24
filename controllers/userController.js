@@ -63,10 +63,7 @@ const loadRegister = async (req, res) => {
 const insertUser = async (req, res) => {
     try {
         const{username,email,phone,password}=req.body
-        // if (!username || !email || !phone || !password) {
-        //     return res.render('login-register', { message: 'All fields are required' });
-        // }
-        const existsemail=await User.exists({email:email})
+       const existsemail=await User.exists({email:email})
         const existsphone=await User.exists({phone:phone})
         if(existsemail && existsphone)
             {
@@ -84,7 +81,7 @@ const insertUser = async (req, res) => {
                 }
                 else
                 {
-                    //
+                
                     const otpCode = otp.generate()
 
                     //for saving otp datas in session for verifing in future
@@ -241,61 +238,6 @@ const loadOtp = async (req, res) => {
         console.log(error.message);
     }
 }
-
-// const verifyOtp = async (req, res) => {
-//     try {
-//         const {
-//             one,
-//             two,
-//             three,
-//             four
-//             } = req.body
-//         const enteredOtp = `${one}${two}${three}${four}`
-//         const otp = req.session.otp
-//         const expireOtp = req.session.otpExpire
-
-//         console.log('Entered otp:', enteredOtp);
-//         console.log('session otp:', otp);
-
-//         if (otp === enteredOtp && Date.now() < expireOtp) {
-
-//             req.session.otp = null
-//             const userData = req.session.tempUser
-//             const spassword = await pass.securePassword(userData.password)
-//             const user = await User.create({
-
-//                 username: userData. username,
-//                 email: userData.email,
-//                 phone: userData.phone,
-//                 password: spassword,
-            
-                
-
-//             })
-          
-        
-//         const userInfo = await user.save()
-//             if (userInfo) {
-            
-//                 res.redirect('login');
-//             }
-//             else {
-//                     res.render('login-register', { message: 'Registration failed' });
-//                  }
-
-           
-//                 }else{
-//                     res.render('otp',{message:'invalid Otp'})
-//                 }   
-        
-//     }catch(error)   
-//             {
-//                 console.log(error)
-//                 res.status(500).send('Internal Server Error');
-//             }
-//         };
-  
-
 const verifyOtp = async (req, res) => {
     try {
         const { one, two, three, four } = req.body;
@@ -334,8 +276,6 @@ const verifyOtp = async (req, res) => {
         res.status(500).send('Internal Server Error');
     }
 };
-
-
 
 const logout = async (req, res) => {
     try {
@@ -392,79 +332,7 @@ const loadFailurGoogle=async(req,res)=>{
         console.log('error from userController loadFailurGoogle',error);
     }
 }
-// const loadShop = async (req, res) => {
-//     try {
-//         const sortOptions = {
-//             "popularity": { orderCount: -1 },
-//             "low-to-high": { promo_Price: 1 },
-//             "high-to-low": { promo_Price: -1 },
-//             "new-arrivals": { dateCreated: -1 },
-//             "aA-zZ": { name: 1 },
-//             "zZ-aA": { name: -1 },
-//         };
 
-//         let sortBy = req.query.sort || "new-arrivals";
-//         let sortCriteria = sortOptions[sortBy] || sortOptions["new-arrivals"];
-//         console.log("sortCriteria --" + sortCriteria);
-
-//         const searchQuery = req.query.search || '';
-//         let filter = {isDelete:false};
-//         if (searchQuery) {
-//             filter.name = { $regex: searchQuery, $options: 'i' };
-//         }
-
-//         const selectedCategory = req.query.category || '';
-//         if (selectedCategory) {
-//             const category = await Category.findOne({ name: selectedCategory });
-//             if (category) {
-//                 filter.category = category._id;
-//             } else {
-//                 console.log('Invalid category');
-//             }
-//         }
-
-//         let page = parseInt(req.query.page) || 1;
-//         let limit = parseInt(req.query.limit) || 8;
-//         let startIndex = (page - 1) * limit;
-
-//         let products = await Product.find(filter).sort(sortCriteria).skip(startIndex).limit(limit);
-//         let totalDocuments = await Product.countDocuments(filter);
-//         let totalPages = Math.ceil(totalDocuments / limit);
-//         let categories = await Category.find();
-//         let totalProducts=await Product.countDocuments()
-//         let wishlists = await wishlist.findOne({userId:req.session.user._id})
-//         let cart=await Cart.findOne({userId:req.session.user._id})
-//         let cartCount=0;
-//         let wishlistCount=0;
-//         if(cart)
-//         {
-//              cartCount = cart.products.length
-             
-//             }else if(wishlists)
-//     {
-//             wishlistCount = wishlists.items.length
-
-//         }
-
-//         console.log(cart);
-
-//         res.render('user_Home3', {
-//             products: products,
-//             page,
-//             totalPages,
-//             limit,
-//             sortBy,
-//             categories,
-//             searchQuery,
-//             selectedCategory,
-//             totalProducts,
-//             cart:cartCount,
-//             wishlists:wishlistCount
-//         });
-//     } catch (error) {
-//         console.log('error from loadShop ', error);
-//     }
-// }
 const loadShop = async (req, res) => {
     try {
         const sortOptions = {
@@ -688,35 +556,6 @@ const loadProfile = async (req, res) => {
         res.status(500).render('error', { msg: "Internal server error" });
     }
 };
-// list one order
-// const loadProfile= async (req, res) => {
-//     try {
-//         console.log('inside ordercontroller');
-//         const userId = req.session.user._id;
-        
-//         req.session.returnTo = req.originalUrl;
-        
-//         const orders = await Order.find({ userId: userId }).populate('products.productId').sort({ dateCreated: -1 });
-//         const userAddress = await Address.find({ userId: userId });
-//         const userData = await User.findById(userId);
-//         const userName=userData.username
-        
-//         if (orders.length > 0) {
-//             res.render('profile', { order: orders, userAddress: userAddress,name: userName, msg: "",user:userData});
-//         } else {
-//             res.render('profile', { order: [] });
-//         }
-//     } catch (error) {
-//         console.log("error from orderController loadOrders", error);
-//         res.status(500).send("Internal Server Error");
-//     }
-// };
-
-
-
-
-
-
 
 const changepassword=async(req,res)=>{
     try {
@@ -756,149 +595,6 @@ const addchangepassword = async (req, res) => {
         res.status(500).json({ msg: 'Internal server error' });
     }
 };
-
-// const cancelOrder = async (req, res) => {
-//     try {
-//         console.log("Order data remaining");
-
-//         if (!req.session.user) {
-//             return res.status(401).json({ success: false, message: "Unauthorized" });
-//         }
-
-//         const userId = req.session.user._id;
-//         const { orderId, productId } = req.body;
-
-//         if (!orderId || !productId) {
-//             return res.status(400).json({ success: false, message: "Order ID and Product ID are required" });
-//         }
-
-//         console.log("Request body:", req.body);
-
-//         const orderData = await Order.findById(orderId);
-//         if (!orderData) {
-//             console.log("Error finding order data");
-//             return res.status(400).json({ success: false, message: "Order not found" });
-//         }
-
-//         const orderDetails = orderData.products.find(pro => pro._id.toString() === productId);
-//         if (!orderDetails) {
-//             console.log("Error finding order details");
-//             return res.status(400).json({ success: false, message: "Order details not found" });
-//         }
-
-//         const size = orderDetails.size;
-//         const quantity = orderDetails.quantity;
-//         const productIdd = orderDetails.productId;
-
-//         if (!productIdd) {
-//             console.log("Product not found");
-//             return res.status(400).json({ success: false, error: "Product not found" });
-//         }
-
-//         const updateObject = {};
-//         updateObject[`sizes.$[elem].quantity`] = quantity; // Increment the stock of the corresponding size by the cancelled quantity
-
-//         const productData = await Product.findOneAndUpdate(
-//             { _id: productIdd, 'sizes.size': size },
-//             { $inc: updateObject },
-//             { arrayFilters: [{ 'elem.size': size }], new: true }
-//         );
-//         console.log(productData);
-
-//         if (!productData) {
-//             console.log("Error updating product data");
-//             return res.status(500).json({ success: false, message: "Internal server error" });
-//         }
-
-//         console.log("Product updated", productData);
-
-//         const productIndex = orderData.products.findIndex(pro => pro._id.toString() === productId);
-//         if (productIndex !== -1) {
-//             orderData.products[productIndex].product_orderStatus = 'cancelled';
-//             console.log('Order cancelled');
-//         } else {
-//             console.log("Product not found in the order.");
-//             return res.status(400).json({ success: false, message: "Product not found in the order" });
-//         }
-
-//         await orderData.save();
-
-//         res.status(200).json({ success: true, message: "Order cancelled successfully" });
-//     } catch (error) {
-//         console.log("Error in cancelOrder:", error);
-//         res.status(500).json({ success: false, message: "Internal server error" });
-//     }
-// };
-// const cancelOrder = async (req, res) => {
-//     try {
-//         const userId = req.session.user._id;
-//         const { orderId, productId } = req.body;
-
-//         const orderData = await Order.findById(orderId);
-//         if (!orderData) {
-//             return res.status(400).json({ success: false, message: "Something wrong, try again later" });
-//         }
-
-//         const orderDetails = orderData.products.find(pro => pro._id.toString() === productId);
-//         if (!orderDetails) {
-//             return res.status(400).json({ success: false, message: "Something wrong, try again later" });
-//         }
-
-//         const size = orderDetails.size;
-//         const quantity = orderDetails.quantity;
-//         const productIdd = orderDetails.productId;
-
-//         if (!productIdd) {
-//             return res.status(400).json({ success: false, error: "Something wrong cancelling order" });
-//         }
-
-//         const updateObject = {};
-//         updateObject[`stock.${size.toUpperCase()}`] = quantity; // Increment the stock of the corresponding size by the cancelled quantity
-
-//         const productData = await Product.findByIdAndUpdate(productIdd, { $inc: updateObject }, { new: true });
-//         if (!productData) {
-//             return res.status(500).json({ success: false, message: "Internal server error" });
-//         }
-
-//         const productIndex = orderData.products.findIndex(pro => pro._id.toString() === productId);
-//         if (productIndex !== -1) {
-//             orderData.products[productIndex].product_orderStatus = 'cancelled';
-//         } else {
-//             console.log("Product not found in the order.");
-//         }
-
-//         let walletMessage = '';
-//         if (orderDetails.payment_status === "Success") {
-//             const wallet = orderDetails.productPrice;
-//             const addWallet = await Order.findByIdAndUpdate(orderId, { $inc: { Wallet: wallet } }, { new: true });
-
-//             const transaction = new Transaction({
-//                 userId: userId,
-//                 productIdInOrder: productId,
-//                 size: size.toUpperCase(),
-//                 quantity: quantity,
-//                 price: wallet,
-//                 type: orderDetails.payment_method.method,
-//             });
-
-//             await transaction.save();
-
-//             if (addWallet) {
-//                 orderDetails.payment_status = "Failed";
-//                 const walletDetails = addWallet.Wallet;
-//                 walletMessage = `Increased Wallet by ${wallet}. Total Wallet: ${walletDetails}`;
-//             }
-//         }
-
-//         await orderData.save();
-//         const responseMessage = walletMessage ? `Order cancelled successfully. ${walletMessage}` : 'Order cancelled successfully.';
-//         res.status(200).json({ success: true, message: responseMessage });
-
-//     } catch (error) {
-//         console.log("Error from userController cancelOrder", error);
-//         res.status(500).json({ success: false, message: "Internal server error" });
-//     }
-// };
 
 const cancelOrder = async (req, res) => {
     try {
@@ -1092,11 +788,7 @@ if(useredit)
     res.redirect('/profile#account-detail')
 
 }
-
-
-
-        
-    } catch (error) {
+} catch (error) {
         console.log("error from usercontroller useredit",error);
         
     }
@@ -1199,40 +891,6 @@ const userUsedCoupon = async (req, res) => {
     }
 };
 
-
-// const ApplayingCoupon = async (req, res) => {
-//     try {
-//         console.log("Rendering ApplayingCoupon");
-
-//         const userId = req.session.user._id;
-//         const { couponId } = req.body; // Destructure couponId from req.body
-
-//         // Check if user exists
-//         const user = await User.findById(userId);
-//         if (!user) {
-//             return res.status(404).json({ success: false, message: "User not found." });
-//         }
-//         console.log("User found");
-
-//         // Check if coupon exists
-//         const coupon = await Coupon.findById(couponId);
-//         if (!coupon) {
-//             return res.status(404).json({ success: false, message: "Coupon not found." });
-//         }
-//         console.log("Coupon found");
-
-//         // Add coupon to session
-//         req.session.userCoupon = couponId;
-
-//         console.log("Session userCoupon:", req.session.userCoupon);
-
-//         res.status(200).json({ success: true, message: "Coupon applied successfully!", couponId: couponId });
-
-//     } catch (error) {
-//         console.error("Error from coupon controller ApplayingCoupon", error);
-//         res.status(500).json({ success: false, message: "An error occurred while applying the coupon." });
-//     }
-// };
 const ApplayingCoupon = async (req, res) => {
     try {
         console.log("Rendering ApplayingCoupon");
@@ -1435,25 +1093,7 @@ const removeCoupon = async (req, res) => {
         // const products_id=OrderData.products._id
         // console.log("products _id ",OrderData.products._id);
         console.log("Order updated");
-    //      // Record the transaction history
-    //      const transaction = new Transaction({
-           
-    //         userId:userId,
-    //         // orderId: orderId,
-    //         productIdInOrder: productId,
-    //         size: size.toUpperCase(),
-    //         quantity: quantity,
-    //         price: wallet,
-    //         type:orderDetails.payment_method.method ,
-    //     });
-
-    // await transaction.save();
-    
-
-       
-
-
-        for (const item of cartData.products) {
+    for (const item of cartData.products) {
             const productId = item.productId._id;
             console.log("product iddd ",productId);
             const size = item.size;
@@ -1600,116 +1240,25 @@ const payment_failure=async(req,res)=>{
             coupon:couponId||null,
             cartId:cartId
         }));
-    
-     
-     
         OrderData.products.push(...orderProducts);
         OrderData.address=[addressDetails]
         OrderData.totalPrice=amount
-       
-
-
-        // OrderData.Wallet=OrderData.Wallet-amount
+     
         console.log("upadted orderData",OrderData.Wallet);
-
-
-
-
-      const saving= await OrderData.save();
+        const saving= await OrderData.save();
         console.log("Order updated");
-
-
-
-           if(saving)
+        if(saving)
             res.status(200).json({success:true,cartId:cartId})
            else
            res.status(200).json({success:false})
-
-
-        
     } catch (error) {
         
         console.log("error from orderController payment_failure",error);
     }
 }
-// const referral = async (req, res) => {
-//     try {
-//         const user = await User.findById(req.session.user._id);
-
-//         if (!user) {
-//             return res.status(400).json({ success: false, message: 'User not found' });
-//         }
-
-//         if (!user.referedBy) {
-//             const referalCode = req.body.referalCode;
-//             console.log(req.body, referalCode);
-//             const referedBy = await User.findOne({ referralCode: referalCode });
-
-//             if (!referedBy) {
-//                 return res.status(400).json({ success: false, message: 'Invalid referral code' });
-//             }
-
-//             console.log(referedBy, "referred user");
-//             console.log(referedBy._id.toString(), req.session.user._id.toString(), "referred ids");
-
-//             if (referedBy._id.toString() === req.session.user._id.toString()) {
-//                 console.log("User tried to refer themselves");
-//                 return res.status(400).json({ success: false, message: 'You cannot refer yourself' });
-//             } else {
-//                 user.referedBy = referedBy.name;
-//                 await user.save();
-
-//                 const name = referedBy.name;
-//                 console.log("referred user", name);
-
-//                 const orderData = await Order.findOne({ username: name });
-
-//                 if (!orderData) {
-//                     return res.status(400).json({ success: false, message: 'Order data not found for referred user' });
-//                 }
-
-//                 orderData.Wallet += 100;
-//                 const save = await orderData.save();
-
-//                 if (save) {
-//                     return res.status(200).json({ success: true });
-//                 } else {
-//                     return res.status(500).json({ success: false, message: 'Failed to update wallet' });
-//                 }
-//             }
-//         } else {
-//             return res.status(400).json({ message: "You have already been referred" });
-//         }
-//     } catch (error) {
-//         console.log("Error from user controller referral:", error);
-//         res.status(500).json({ success: false, message: 'Internal Server Error' });
-//     }
-// };
-
-
-
-
 
 const refereal=require('../helpers/refreral')
 
-// const refer = async(req,res) => {
-//    try {
-//     const email = req.body.email
-//             const user = await User.findById(req.session.user._id)
-//             const referralCode = user.referralCode
-//             console.log("email= = = ",email,"referalcode=====",referralCode);
-            
-//             const sendMail=await refereal.sendreferal(email,referralCode)
-
-      
-
-                 
-        
-//     } 
-//     catch (error) {
-//         console.log("error from user controller refer",error);
-//     }
-// }
 const referral = async (req, res) => {
     try {
         const user = await User.findById(req.session.user._id);
@@ -1867,13 +1416,6 @@ const loadoderDetails = async (req, res) => {
     }
 };
 
-
-
-
-
-  
- 
-  
 module.exports = {
     loadHome,
     loadRegister,

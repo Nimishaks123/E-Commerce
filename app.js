@@ -5,6 +5,7 @@ const bodyparser=require('body-parser')
 const app= express()
 const Razorpay = require('razorpay');
 require('dotenv').config();
+const PORT = process.env.PORT || 3001;
 
 //mongoose
 const mongoose=require('mongoose')
@@ -48,4 +49,4 @@ app.use('/',userRoute)
 
 
 
-app.listen(3000,()=>console.log('server Running00'))
+app.listen(PORT,()=>console.log(`server Running ${PORT}`))

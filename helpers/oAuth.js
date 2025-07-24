@@ -28,7 +28,7 @@ passport.deserializeUser(function(user, done) {
 passport.use(new GoogleStrategy({ 
     clientID:process.env.GOOGLE_CLIENT_ID,
     clientSecret:process.env.GOOGLE_CLIENT_SECRET,
-    callbackURL:"https://shopiz.site/auth/google/callback",
+    callbackURL:"http://localhost:3001/auth/google/callback",
     // profileFields:['id', 'displayName', 'name', 'gender', 'picture.type(large)','email'],
     passReqToCallback: true
 

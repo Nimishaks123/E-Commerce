@@ -88,6 +88,4 @@ userRoute.post('/profile/refer',userAuth.isLogin,userController.refer)
 userRoute.delete('/delete/order/',userAuth.isLogin,userController.deleteOrder)
 userRoute.get('/order/invoice',orderController.loadInvoice)
 userRoute.get('/profile/orders/detail',userController.loadoderDetails)
-
-
 module.exports=userRoute
