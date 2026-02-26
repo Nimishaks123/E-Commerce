@@ -1,52 +1,51 @@
-const express=require('express')
-const session =require('express-session')
-const path=require('path')
-const bodyparser=require('body-parser')
-const app= express()
-const Razorpay = require('razorpay');
+const express = require('express');
+const session = require('express-session');
+const path = require('path');
+const bodyParser = require('body-parser');
+const mongoose = require('mongoose');
 require('dotenv').config();
+
+const app = express();
 const PORT = process.env.PORT || 3001;
 
-//mongoose
-const mongoose=require('mongoose')
-mongoose.connect(process.env.MONGODB)
-.then(()=>
-{
-    console.log('connected to mongodb');
-})
-.catch((error)=>
-{
-    console.error('Error connecting to mongodb',error)
-})
+// Trust proxy 
+app.set('trust proxy', 1);
 
+// MongoDB connection
+mongoose.connect(process.env.MONGO_URI)
+  .then(() => console.log('Connected to MongoDB'))
+  .catch(err => console.error('MongoDB connection error:', err));
 
-
+// Session config
 app.use(session({
-    secret:'ksdnsndjnsdsussj',
-    resave:false,
-    saveUninitialized:'true'
-}))
+  secret: process.env.SESSION_SECRET,
+  resave: false,
+  saveUninitialized: false,
+  cookie: {
+    secure: true,
+    sameSite: 'none'
+  }
+}));
 
+// View engine
+app.set('views', path.join(__dirname, 'views'));
+app.set('view engine', 'ejs');
 
+// Middleware
+app.use(bodyParser.json());
+app.use(bodyParser.urlencoded({ extended: true }));
 
-const adminRoute=require('./routes/adminRoute') 
-const userRoute=require('./routes/userRoute')
+// Static files
+app.use(express.static(path.join(__dirname, 'public')));
 
+// Routes
+const adminRoute = require('./routes/adminRoute');
+const userRoute = require('./routes/userRoute');
 
-app.set('views',path.join(__dirname,'views'))
-app.set('view engine','ejs')
+app.use('/admin', adminRoute);
+app.use('/', userRoute);
 
-app.use(bodyparser.json())
-app.use(bodyparser.urlencoded({extended:true}))
-
-
-app.use(express.static('public'))
-app.use(express.static(path.join(__dirname,'public')))
-
-app.use('/admin',adminRoute)
-app.use('/',userRoute)
-
-
-
-
-app.listen(PORT,()=>console.log(`server Running ${PORT}`))
+// Start server
+app.listen(PORT, () => {
+  console.log(`Server running on port ${PORT}`);
+});
