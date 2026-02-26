@@ -2,6 +2,8 @@ const passport = require('passport');
 require('dotenv').config();
 const User = require('../models/userModel');
 
+console.log("GOOGLE CALLBACK URL:", process.env.GOOGLE_CALLBACK_URL);
+
 const GoogleStrategy = require('passport-google-oauth2').Strategy;
 
 /* =========================
