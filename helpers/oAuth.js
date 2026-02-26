@@ -1,67 +1,62 @@
-const passport=require('passport')
-require('dotenv').config()
-const User=require('../models/userModel')
+const passport = require('passport');
+require('dotenv').config();
+const User = require('../models/userModel');
 
+const GoogleStrategy = require('passport-google-oauth2').Strategy;
 
-const GoogleStrategy=require('passport-google-oauth2').Strategy
-// const facebookLink=require('passport-facebook').Strategy
+/* =========================
+   Serialize & Deserialize
+========================= */
 
-
-// used to serialize the user for the session
-passport.serializeUser(function(user,done)
-{
-    done(null,user)
-})
-
-// used to deserialize the user
-// used to deserialize the user
-passport.deserializeUser(function(user, done) {
-    if (!user) {
-        return done(new Error('User not found'));
-    }
-    done(null, user);
+// Serialize user to session
+passport.serializeUser((user, done) => {
+  done(null, user.id); // store only user ID
 });
 
+// Deserialize user from session
+passport.deserializeUser(async (id, done) => {
+  try {
+    const user = await User.findById(id);
+    if (!user) return done(new Error('User not found'));
+    done(null, user);
+  } catch (err) {
+    done(err);
+  }
+});
 
+/* =========================
+   Google OAuth Strategy
+========================= */
 
-// google linking
-passport.use(new GoogleStrategy({ 
-    clientID:process.env.GOOGLE_CLIENT_ID,
-    clientSecret:process.env.GOOGLE_CLIENT_SECRET,
-    callbackURL:"http://localhost:3001/auth/google/callback",
-    // profileFields:['id', 'displayName', 'name', 'gender', 'picture.type(large)','email'],
-    passReqToCallback: true
+passport.use(
+  new GoogleStrategy(
+    {
+      clientID: process.env.GOOGLE_CLIENT_ID,
+      clientSecret: process.env.GOOGLE_CLIENT_SECRET,
+      callbackURL: process.env.GOOGLE_CALLBACK_URL,
+      passReqToCallback: true,
+    },
+    async (req, accessToken, refreshToken, profile, done) => {
+      try {
+        let user = await User.findOne({ googleId: profile.id });
 
-
-},
-async function(request,accessToken, refreshToken, profile, done) {
-         try {
-             let user = await User.findOne({ googleId: profile.id }).exec()
-             
-             
-            
-             if (!user) {
-                 user = await User.create({
-                     googleId: profile.id,
-                     email: profile.emails[0].value, // Assuming email is provided from Google profile
-                     username: profile.displayName, // Assuming username is provided from Google profile
-                     isBlocked: false, // Assuming isBlocked is optional and default value is false
-                     password: "", // Assuming password is optional and empty string
-                     mobile: "", // Assuming mobile is optional and empty string
-                       
-                 });
-             }
-             
-            
-             return done(null, user);
-         } catch (err) {
-            return done(err);
-   
-         }
+        if (!user) {
+          user = await User.create({
+            googleId: profile.id,
+            email: profile.emails?.[0]?.value || '',
+            username: profile.displayName || '',
+            isBlocked: false,
+            password: '',
+            mobile: '',
+          });
         }
-));
 
+        return done(null, user);
+      } catch (error) {
+        return done(error);
+      }
+    }
+  )
+);
 
-// const profilePage=  function(req, res) {
-//     res.render('profile', { user: req.user });
-// }
+module.exports = passport;
